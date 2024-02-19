@@ -25,13 +25,11 @@ namespace Assets.Mine.Core.Scripts.Utility
             if (HasKey(key))
             {
 #if UNITY_EDITOR
-                Debug.LogWarning(
-                    $"The key ''{key}'' you wanted to add is already exists - this key's value is overwritten");
+                Debug.LogWarning($"The key ''{key}'' you wanted to add is already exists - this key's value is overwritten");
 #endif
                 DeleteSave(key);
-                //not early return and write data call once
-                WriteData(data, key);
-                return;
+                /* WriteData(data, key);
+                return; */
             }
 
             WriteData(data, key);

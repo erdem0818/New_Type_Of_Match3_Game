@@ -4,5 +4,14 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Mine/Core/Scenes/BootstrapScene.unity
+    guid: e5d7fff0b5744ab45ae0d7e757639248
+  - enabled: 1
+    path: Assets/Mine/Core/Scenes/MainScene.unity
+    guid: 3e17fdc0ceb98424e88755b0fd6529bf
+  - enabled: 1
+    path: Assets/Mine/Core/Scenes/GameScene.unity
+    guid: c5bff970d554eda4f85a48cea6e27e24
   m_configObjects: {}
