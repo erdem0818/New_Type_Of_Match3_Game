@@ -1,0 +1,10 @@
+TODO 
+todo MVRP amaıc
+
+peak's match factory like game
+
+Info Scene Arch.
+    Bootstrap -> Main Scene -> Game Scene
+
+Info Food Arch.
+    info food view : mono
