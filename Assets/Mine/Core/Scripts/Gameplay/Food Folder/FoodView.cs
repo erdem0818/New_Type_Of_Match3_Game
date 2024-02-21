@@ -7,13 +7,13 @@ using Zenject;
 
 namespace Assets.Mine.Core.Scripts.Gameplay.FoodFolder
 {
-    //todo like VObject<> ??
-    //todo click presenter ?
     public class FoodView : MonoBehaviour
     {
-        [Inject] private SignalBus _signalBus;
+        [Inject] private readonly SignalBus _signalBus;
         
         [SerializeField] private FoodData data;
+
+        public bool IsSelected { get; set; } = false;
 
         private void Awake() 
         {
@@ -25,8 +25,18 @@ namespace Assets.Mine.Core.Scripts.Gameplay.FoodFolder
 
         private void OnClickedFood()
         {
+            if(IsSelected) return;
+
             _signalBus.TryFire(new FoodClickedSignal{Food = this});
-            Debug.Log("up as button");
+        }
+
+        public void SetPhysics(bool active)
+        {
+            Rigidbody rigidbody = GetComponent<Rigidbody>();
+
+            rigidbody.velocity = Vector3.zero;
+            rigidbody.angularVelocity = Vector3.zero;
+            rigidbody.isKinematic = !active;
         }
     }
 }
