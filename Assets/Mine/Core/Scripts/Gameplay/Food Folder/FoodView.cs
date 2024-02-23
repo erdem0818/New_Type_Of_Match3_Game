@@ -4,7 +4,6 @@ using UniRx.Triggers;
 using UniRx;
 using UnityEngine;
 using Zenject;
-using DG.Tweening;
 
 namespace Assets.Mine.Core.Scripts.Gameplay.FoodFolder
 {
@@ -13,6 +12,7 @@ namespace Assets.Mine.Core.Scripts.Gameplay.FoodFolder
         [Inject] private readonly SignalBus _signalBus;
 
         [SerializeField] private FoodData data;
+        public FoodData Data => data;
 
         public bool IsSelected { get; set; } = false;
 

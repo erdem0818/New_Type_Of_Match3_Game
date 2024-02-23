@@ -21,6 +21,7 @@ namespace Assets.Mine.Core.Scripts.Gameplay.FoodFolder
             _platform = platform;
             _signalBus = signalBus;
         }
+
         public void Initialize()
         {
             _signalBus.Subscribe<FoodClickedSignal>(OnClickedFood);
@@ -58,4 +59,3 @@ namespace Assets.Mine.Core.Scripts.Gameplay.FoodFolder
         }
     }
 }
-
