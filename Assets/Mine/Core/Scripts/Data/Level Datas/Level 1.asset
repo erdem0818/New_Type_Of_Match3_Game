@@ -15,3 +15,9 @@ MonoBehaviour:
   levelDataPairs:
   - food: {fileID: 11400000, guid: 654a48f8c64eba74f96d0c9742a240f8, type: 2}
     count: 5
+  - food: {fileID: 11400000, guid: e07e1983e1d76534e9a78c1e092e4ea8, type: 2}
+    count: 5
+  - food: {fileID: 11400000, guid: 582c22947861e7d4ea8ec161c4a1363d, type: 2}
+    count: 5
+  - food: {fileID: 11400000, guid: 93ece9051d352894d9c67fc9fd7df876, type: 2}
+    count: 5

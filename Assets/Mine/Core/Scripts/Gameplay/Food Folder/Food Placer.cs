@@ -48,7 +48,8 @@ namespace Assets.Mine.Core.Scripts.Gameplay.FoodFolder
             int emptyIndex = _platform.GetFirstEmptyIndex(); 
             _platform.SetOccupationStatus(emptyIndex, true);
 
-            food.transform.DOMove(_platform.GetPartPosition(emptyIndex), 0.25f).SetAutoKill(true);
+            food.transform.DOMove(_platform.GetPartPosition(emptyIndex), 0.25f).SetAutoKill(true).SetEase(Ease.InCubic);
+            food.transform.DORotateQuaternion(UnityEngine.Quaternion.identity, 0.25f).SetAutoKill(true);
             food.IsSelected = true;
 
             _signalBus.TryFire(new FoodPlacedSignal(){Food = food, PlacedIndex = emptyIndex});

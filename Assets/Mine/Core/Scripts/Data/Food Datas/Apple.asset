@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Apple
   m_EditorClassIdentifier: 
   foodName: Apple
-  foodID: 2
+  foodID: 1
   foodPrefab: {fileID: 996792189826996279, guid: dd0957c6a9ce1cd4ebdbc421f246d01a, type: 3}

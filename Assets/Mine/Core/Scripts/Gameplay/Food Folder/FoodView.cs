@@ -4,13 +4,14 @@ using UniRx.Triggers;
 using UniRx;
 using UnityEngine;
 using Zenject;
+using DG.Tweening;
 
 namespace Assets.Mine.Core.Scripts.Gameplay.FoodFolder
 {
     public class FoodView : MonoBehaviour
     {
         [Inject] private readonly SignalBus _signalBus;
-        
+
         [SerializeField] private FoodData data;
 
         public bool IsSelected { get; set; } = false;

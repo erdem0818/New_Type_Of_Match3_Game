@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Acorn
   m_EditorClassIdentifier: 
   foodName: Acorn
-  foodID: 1
+  foodID: 0
   foodPrefab: {fileID: 5050040400634016727, guid: 5c84c99a0631cfd4aa2386fb43e1f84f, type: 3}
