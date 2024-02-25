@@ -49,25 +49,11 @@ namespace Assets.Mine.Core.Scripts.Gameplay
             _foodViews = new FoodView[PlatformLength];
         }
 
-        public void ReOrderAll()
-        {
-            /*for (int i = 0; i < _parts.Count; i++)
-            {
-                int available = GetFirstEmptyIndex();
-                PlatformPart platformPart = _parts[i];
-                platformPart.IsOccupied = false;
-                SetOccupationStatus(i, true);
-
-                platformPart.Transform.DOMove(platformPart.GetPlacePosition(), 0.5f)
-                    .SetAutoKill(true);
-            }*/
-        }
-
         public void SetOccupationStatus(int indx, FoodView food, bool occupied)
         {
-            if (_parts[indx].IsOccupied)
+            if (occupied && _parts[indx].IsOccupied)
             {
-                MoveAllSide(indx);
+                MoveAllRightSide(indx);
                 Debug.Log("Already occupied".ToBold().ToColor(new Color(0.75f, 0.25f, 0.45f, 1.0f)));
             }
 
@@ -75,13 +61,9 @@ namespace Assets.Mine.Core.Scripts.Gameplay
             _foodViews[indx] = food;
         }
 
-        public void MoveAllSide(int startIndex)
+        public void MoveAllRightSide(int startIndex)
         {
-            int lastFullIndex = 0;
-            for (int i = 0; i < _foodViews.Length; i++)
-            {
-                if (_foodViews[i] != null) lastFullIndex = i;
-            }
+            int lastFullIndex = GetLastFullIndex();
             Debug.Log($"Last Occupied Index: {lastFullIndex}".ToBold());
 
             for (int i = lastFullIndex; i >= startIndex; i--)
@@ -93,23 +75,35 @@ namespace Assets.Mine.Core.Scripts.Gameplay
                 _foodViews[i + 1] = food;
                 _parts[i + 1].IsOccupied = true;
 
+                //todo refactor not here
                 food.transform.DOMove(GetPartPosition(i + 1), 0.1f)
                     .SetAutoKill(true);
             }
         }
 
-        public int GetFirstEmptyIndex()
+        public void MoveAllLeftSide(int startIndex)
         {
-            if(AnyEmpty() == false)
-                return Defines.AllFull;
-
-            for (int i = 0; i < _parts.Count; i++)
+            // -1, -1, -1, 2, 2, 5, 5, 6
+            for (int i = 0; i < _foodViews.Length; i++)
             {
-                if(_parts[i].IsOccupied == false)
-                    return i;
-            }
+                if (_foodViews[i] == null)
+                    continue;
 
-            return Defines.AllFull;
+                FoodView food = _foodViews[i];
+
+                //todo first make empty
+                _parts[i].IsOccupied = false;
+                _foodViews[i] = null;
+                
+                //then find the empty
+                int empty = GetFirstEmptyIndex();
+                _parts[empty].IsOccupied = true;
+                _foodViews[empty] = food;
+
+                //todo refactor not here
+                food.transform.DOMove(GetPartPosition(empty), 0.1f)
+                    .SetAutoKill(true);
+            }
         }
 
         public int GetPlaceIndex(int foodId)
@@ -146,6 +140,20 @@ namespace Assets.Mine.Core.Scripts.Gameplay
             return index;
         }
 
+        public int GetFirstEmptyIndex()
+        {
+            if (AnyEmpty() == false)
+                return Defines.AllFull;
+
+            for (int i = 0; i < _parts.Count; i++)
+            {
+                if (_parts[i].IsOccupied == false)
+                    return i;
+            }
+
+            return Defines.AllFull;
+        }
+
         public bool IsThereAnySameFood(int id)
         {
             foreach (var item in _foodViews)
@@ -156,6 +164,16 @@ namespace Assets.Mine.Core.Scripts.Gameplay
                 if(item.Data.foodID == id) return true;
             }
             return false;
+        }
+
+        public int GetLastFullIndex()
+        {
+            int lastFullIndex = 0;
+            for (int i = 0; i < _foodViews.Length; i++)
+            {
+                if (_foodViews[i] != null) lastFullIndex = i;
+            }
+            return lastFullIndex;
         }
 
         public bool AllEmpty() => _parts.All(p => p.IsOccupied == false);

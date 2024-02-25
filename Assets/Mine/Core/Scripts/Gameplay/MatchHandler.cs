@@ -4,12 +4,13 @@ using System.Linq;
 using Assets.Mine.Core.Scripts.Gameplay.FoodFolder;
 using Zenject;
 using UnityEngine;
+using Assets.Mine.Core.Scripts.Framework.Extensions;
 
 namespace Assets.Mine.Core.Scripts.Gameplay
 {
     public struct MatchHappenedSignal
     {
-        public List<ValueTuple<int, FoodView>> IndexFoodTuples {get; set;}
+        public List<(int index, FoodView food)> IndexFoodTuples {get; set;}
     }
 
     public class MatchHandler : IInitializable, IDisposable
@@ -39,7 +40,7 @@ namespace Assets.Mine.Core.Scripts.Gameplay
         {
             if (IsThereAnyMatch() == false) return;
 
-            Debug.Log("MATCH");
+            Debug.Log("MATCH".ToBold().ToColor(Color.blue));
         }
 
         private bool IsThereAnyMatch()

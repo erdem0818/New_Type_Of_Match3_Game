@@ -18,3 +18,9 @@ General FoodArray holder
 FoodPlacer
 Platform
 MathHandler
+
+make all movements in one class FoodPlacer - Platform
+
+make the flow correct
+    food placed
+    etc....

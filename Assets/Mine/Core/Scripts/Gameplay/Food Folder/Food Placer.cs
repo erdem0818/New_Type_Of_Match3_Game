@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Assets.Mine.Core.Scripts.Framework.Extensions;
 using Assets.Mine.Core.Scripts.Gameplay.Signals;
 using Cysharp.Threading.Tasks;
@@ -75,12 +76,12 @@ namespace Assets.Mine.Core.Scripts.Gameplay.FoodFolder
             //todo set occupation status
             for (int i = 0; i < signal.IndexFoodTuples.Count; i++)
             {
-                _platform.SetOccupationStatus(signal.IndexFoodTuples[i].Item1, null, false);
+                _platform.SetOccupationStatus(signal.IndexFoodTuples[i].index, null, false);
                 //todo animation
-                UnityEngine.Object.Destroy(signal.IndexFoodTuples[i].Item2.gameObject);
+                UnityEngine.Object.Destroy(signal.IndexFoodTuples[i].food.gameObject);
             }
 
-            _platform.ReOrderAll();
+            _platform.MoveAllLeftSide(signal.IndexFoodTuples.Last().index + 1);
         }
     }
 }
