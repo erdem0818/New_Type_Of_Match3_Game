@@ -11,6 +11,7 @@ namespace Assets.Mine.Core.Scripts.Gameplay
     public struct MatchHappenedSignal
     {
         public List<(int index, FoodView food)> IndexFoodTuples {get; set;}
+        public Vector3 MidPosition { get; set;}
     }
 
     public class MatchHandler : IInitializable, IDisposable
@@ -28,17 +29,27 @@ namespace Assets.Mine.Core.Scripts.Gameplay
 
         public void Initialize()
         {
-            _signalBus.Subscribe<FoodPlacedSignal>(OnFoodPlaced);
+            _signalBus.Subscribe<FoodPlacingMovementFinishedSignal>(OnFoodPlacingMovementFinished);
         }
 
         public void Dispose()
         {
-            _signalBus.TryUnsubscribe<FoodPlacedSignal>(OnFoodPlaced);
+            _signalBus.TryUnsubscribe<FoodPlacingMovementFinishedSignal>(OnFoodPlacingMovementFinished);
         }
 
-        private void OnFoodPlaced(FoodPlacedSignal signal)
+        private void OnFoodPlacingMovementFinished(FoodPlacingMovementFinishedSignal signal)
         {
-            if (IsThereAnyMatch() == false) return;
+            if (IsThereAnyMatch() == false)
+            {
+                if(_platform.Full())
+                {
+                    Debug.Log($"FAIL"
+                        .ToBold()
+                        .ToColor(new Color(0.85f, 0.15f, 0.05f)));
+                }
+
+                return;
+            }
 
             Debug.Log("MATCH".ToBold().ToColor(Color.blue));
         }
@@ -71,8 +82,9 @@ namespace Assets.Mine.Core.Scripts.Gameplay
 
                 if(same)
                 {
-                    List<ValueTuple<int, FoodView>> matches = new()
+                    List<(int index, FoodView food)> matches = new()
                     {
+                        //not hard code 3 -> required
                         new ValueTuple<int, FoodView>(i, looks[0]),
                         new ValueTuple<int, FoodView>(i + 1, looks[1]),
                         new ValueTuple<int, FoodView>(i + 2, looks[2])
@@ -81,7 +93,8 @@ namespace Assets.Mine.Core.Scripts.Gameplay
                     //todo but wait animation
                     _signalBus.TryFire(new MatchHappenedSignal()
                     {
-                        IndexFoodTuples = matches
+                        IndexFoodTuples = matches,
+                        MidPosition = matches[1].food.transform.position + Vector3.up * 0.25f
                     });
 
                     return true;

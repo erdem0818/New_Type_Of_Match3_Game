@@ -12,6 +12,8 @@ namespace Assets.Mine.Core.Scripts.Gameplay
 
         private void OnGUI()
         {
+            if(_platform == null || _platform.Foods == null) return;
+
             StringBuilder builder = new StringBuilder();
             for (int i = 0;i < _platform.Foods.Length; i++)
             {

@@ -24,3 +24,22 @@ make all movements in one class FoodPlacer - Platform
 make the flow correct
     food placed
     etc....
+
+    Food Click Signal
+    Try Place -> if Platform Full -> Fail
+    Move Objects Right if necessary
+    Check For Match
+    if Match -> Blast -> Move Objects Left
+
+Todo Move All signals in a file
+
+Signal flow
+    FoodClickedSignal
+    ..
+    FoodPlacedSignal
+    ..
+    FoodPlacingMovementFinishedSignal
+    ..
+    MatchHappenedSignal (if)
+    ..
+    MatchAnimationFinishedSignal

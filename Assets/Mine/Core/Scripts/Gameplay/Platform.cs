@@ -1,6 +1,9 @@
 using Assets.Mine.Core.Scripts.Framework.Extensions;
 using Assets.Mine.Core.Scripts.Gameplay.FoodFolder;
+using Assets.Mine.Core.Scripts.Gameplay.Signals;
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -19,22 +22,33 @@ namespace Assets.Mine.Core.Scripts.Gameplay
         }
     }
 
-    public class Platform : IInitializable
+    public class Platform : IInitializable, IDisposable
     {
-        private Transform _transform;
+        private readonly SignalBus _signalBus;
+        private readonly Transform _transform;
+        private readonly FoodPlacer _foodPlacer;
 
-        public Platform(Transform transform)
+        public Platform(SignalBus signalBus, Transform transform, FoodPlacer foodPlacer)
         {
+            _signalBus = signalBus;
             _transform = transform;
+            _foodPlacer = foodPlacer;
         }
 
         private readonly List<PlatformPart> _parts = new();
-        private FoodView[] _foodViews;
-        public FoodView[] Foods => _foodViews;
+        public FoodView[] Foods { get; private set; }
 
         public int PlatformLength => _parts.Count;
 
         public void Initialize() 
+        {
+            InitArrays();
+            _signalBus.Subscribe<FoodClickedSignal>(OnFoodClicked);
+            _signalBus.Subscribe<MatchHappenedSignal>(OnMatchHappened);
+            _signalBus.Subscribe<MatchAnimationFinishedSignal>(OnMatchAnimationFinished);
+        }
+
+        private void InitArrays()
         {
             int childCount = _transform.childCount;
             for (int i = 0; i < childCount; i++)
@@ -46,7 +60,51 @@ namespace Assets.Mine.Core.Scripts.Gameplay
                 });
             }
 
-            _foodViews = new FoodView[PlatformLength];
+            Foods = new FoodView[PlatformLength];
+        }
+
+        public void Dispose()
+        {
+            _signalBus.TryUnsubscribe<FoodClickedSignal>(OnFoodClicked);
+            _signalBus.TryUnsubscribe<MatchHappenedSignal>(OnMatchHappened);
+            _signalBus.TryUnsubscribe<MatchAnimationFinishedSignal>(OnMatchAnimationFinished);
+        }
+
+        private void OnFoodClicked(FoodClickedSignal signal)
+        {
+            if (Full()) return;
+            Place(signal);
+        }
+
+        private void Place(FoodClickedSignal signal)
+        {
+            int placeIndex = GetPlaceIndex(signal.Food.Data.foodID);
+            Debug.Log($"PlaceIndex: {placeIndex}".ToBold());
+
+            signal.Food.IsSelected = true;
+            signal.Food.SetPhysics(false);
+
+            SetOccupationStatus(placeIndex, signal.Food, true);
+
+            _signalBus.TryFire(new FoodPlacedSignal()
+            {
+                Food = signal.Food,
+                PlacedIndex = placeIndex,
+                PlacePosition = GetPartPosition(placeIndex)
+            });
+        }
+
+        private void OnMatchHappened(MatchHappenedSignal signal)
+        {
+            signal.IndexFoodTuples.ForEach(tuple =>
+            {
+                SetOccupationStatus(tuple.index, null, false);
+            });
+        }
+
+        private void OnMatchAnimationFinished(MatchAnimationFinishedSignal signal)
+        {
+            MoveAllLeftSide();
         }
 
         public void SetOccupationStatus(int indx, FoodView food, bool occupied)
@@ -54,11 +112,13 @@ namespace Assets.Mine.Core.Scripts.Gameplay
             if (occupied && _parts[indx].IsOccupied)
             {
                 MoveAllRightSide(indx);
-                Debug.Log("Already occupied".ToBold().ToColor(new Color(0.75f, 0.25f, 0.45f, 1.0f)));
+                Debug.Log("Already occupied"
+                    .ToBold()
+                    .ToColor(new Color(0.75f, 0.25f, 0.45f, 1.0f)));
             }
 
             _parts[indx].IsOccupied = occupied;
-            _foodViews[indx] = food;
+            Foods[indx] = food;
         }
 
         public void MoveAllRightSide(int startIndex)
@@ -68,41 +128,38 @@ namespace Assets.Mine.Core.Scripts.Gameplay
 
             for (int i = lastFullIndex; i >= startIndex; i--)
             {
-                if (_foodViews[i] == null)
+                if (Foods[i] == null)
                     continue;
 
-                FoodView food = _foodViews[i];
-                _foodViews[i + 1] = food;
+                FoodView food = Foods[i];
+                Foods[i + 1] = food;
                 _parts[i + 1].IsOccupied = true;
 
                 //todo refactor not here
-                food.transform.DOMove(GetPartPosition(i + 1), 0.1f)
-                    .SetAutoKill(true);
+                _foodPlacer.SlideTheFood(food, GetPartPosition(i + 1)).Forget();
             }
         }
 
-        public void MoveAllLeftSide(int startIndex)
+        public void MoveAllLeftSide()
         {
-            // -1, -1, -1, 2, 2, 5, 5, 6
-            for (int i = 0; i < _foodViews.Length; i++)
+            for (int i = 0; i < Foods.Length; i++)
             {
-                if (_foodViews[i] == null)
+                if (Foods[i] == null)
                     continue;
 
-                FoodView food = _foodViews[i];
+                FoodView food = Foods[i];
 
                 //todo first make empty
                 _parts[i].IsOccupied = false;
-                _foodViews[i] = null;
+                Foods[i] = null;
                 
                 //then find the empty
                 int empty = GetFirstEmptyIndex();
                 _parts[empty].IsOccupied = true;
-                _foodViews[empty] = food;
+                Foods[empty] = food;
 
                 //todo refactor not here
-                food.transform.DOMove(GetPartPosition(empty), 0.1f)
-                    .SetAutoKill(true);
+                _foodPlacer.SlideTheFood(food, GetPartPosition(empty)).Forget();
             }
         }
 
@@ -111,13 +168,9 @@ namespace Assets.Mine.Core.Scripts.Gameplay
             if (AllEmpty()) return 0;
 
             if (IsThereAnySameFood(foodId))
-            {
                 return GetFirstNeighborIndex(foodId);
-            }
             else
-            {
                 return GetFirstEmptyIndex();
-            }
         }
 
         public int GetFirstNeighborIndex(int foodId)
@@ -128,9 +181,9 @@ namespace Assets.Mine.Core.Scripts.Gameplay
         public int FindLastFoodIndex(int foodId)
         {
             int index = 0;
-            for (int i = 0; i < _foodViews.Length; i++)
+            for (int i = 0; i < Foods.Length; i++)
             {
-                FoodView temp = _foodViews[i];
+                FoodView temp = Foods[i];
                 if (temp == null || temp.Data.foodID != foodId)
                     continue;
 
@@ -154,28 +207,29 @@ namespace Assets.Mine.Core.Scripts.Gameplay
             return Defines.AllFull;
         }
 
-        public bool IsThereAnySameFood(int id)
-        {
-            foreach (var item in _foodViews)
-            {
-                if (item == null)
-                    continue;
-
-                if(item.Data.foodID == id) return true;
-            }
-            return false;
-        }
-
         public int GetLastFullIndex()
         {
             int lastFullIndex = 0;
-            for (int i = 0; i < _foodViews.Length; i++)
+            for (int i = 0; i < Foods.Length; i++)
             {
-                if (_foodViews[i] != null) lastFullIndex = i;
+                if (Foods[i] != null) lastFullIndex = i;
             }
             return lastFullIndex;
         }
 
+        public bool IsThereAnySameFood(int id)
+        {
+            foreach (var item in Foods)
+            {
+                if (item == null)
+                    continue;
+
+                if (item.Data.foodID == id) return true;
+            }
+            return false;
+        }
+
+        public bool Full() => _parts.All(p => p.IsOccupied);
         public bool AllEmpty() => _parts.All(p => p.IsOccupied == false);
         public bool AnyEmpty() => _parts.Any(p => p.IsOccupied == false);
         public Vector3 GetPartPosition(int index) => _parts[index].GetPlacePosition();
