@@ -9,22 +9,20 @@ namespace Assets.Mine.Core.Scripts.Gameplay
 {
     public struct MatchHappenedSignal
     {
-        public List<FoodView> Foods {get; set;}
+        public List<ValueTuple<int, FoodView>> IndexFoodTuples {get; set;}
     }
 
     public class MatchHandler : IInitializable, IDisposable
     {
         private readonly SignalBus _signalBus;
-        //private readonly Platform _platform;
-
-        private readonly FoodView[] _foodArray;
+        private readonly Platform _platform;
 
         private readonly int _requiredMatchCount = 3;
 
-        public MatchHandler(SignalBus signalBus)
+        public MatchHandler(SignalBus signalBus, Platform platform)
         {
             _signalBus = signalBus;
-            _foodArray = new FoodView[8];
+            _platform = platform;   
         }
 
         public void Initialize()
@@ -39,10 +37,6 @@ namespace Assets.Mine.Core.Scripts.Gameplay
 
         private void OnFoodPlaced(FoodPlacedSignal signal)
         {
-            _foodArray[signal.PlacedIndex] = signal.Food;
-
-            //todo look matches
-
             if (IsThereAnyMatch() == false) return;
 
             Debug.Log("MATCH");
@@ -50,12 +44,12 @@ namespace Assets.Mine.Core.Scripts.Gameplay
 
         private bool IsThereAnyMatch()
         {
-            int len = _foodArray.Length - _requiredMatchCount + 1;
+            int len = _platform.Foods.Length - _requiredMatchCount + 1;
             for(int i = 0; i < len; i++) 
             {
-                if (_foodArray[i] == null) continue;
+                if (_platform.Foods[i] == null) continue;
 
-                FoodView head = _foodArray[i];
+                FoodView head = _platform.Foods[i];
                 int headID = head.Data.foodID;
 
                 List<FoodView> looks = new()
@@ -65,7 +59,7 @@ namespace Assets.Mine.Core.Scripts.Gameplay
 
                 for (int j = 1; j < _requiredMatchCount; j++)
                 {
-                    FoodView neighbor = _foodArray[i + j];
+                    FoodView neighbor = _platform.Foods[i + j];
                     looks.Add(neighbor);
                 }
 
@@ -76,7 +70,18 @@ namespace Assets.Mine.Core.Scripts.Gameplay
 
                 if(same)
                 {
-                    _signalBus.TryFire(new MatchHappenedSignal() { Foods = looks });
+                    List<ValueTuple<int, FoodView>> matches = new()
+                    {
+                        new ValueTuple<int, FoodView>(i, looks[0]),
+                        new ValueTuple<int, FoodView>(i + 1, looks[1]),
+                        new ValueTuple<int, FoodView>(i + 2, looks[2])
+                    };
+
+                    //todo but wait animation
+                    _signalBus.TryFire(new MatchHappenedSignal()
+                    {
+                        IndexFoodTuples = matches
+                    });
 
                     return true;
                 }

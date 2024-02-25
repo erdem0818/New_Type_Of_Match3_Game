@@ -12,3 +12,9 @@ Info Food Arch.
 todo databases.
 todo editor tooling.
 todo food creator.
+
+General FoodArray holder
+
+FoodPlacer
+Platform
+MathHandler

@@ -1,6 +1,9 @@
 using System;
+using Assets.Mine.Core.Scripts.Framework.Extensions;
 using Assets.Mine.Core.Scripts.Gameplay.Signals;
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using UnityEngine;
 using Zenject;
 
 namespace Assets.Mine.Core.Scripts.Gameplay.FoodFolder
@@ -25,37 +28,59 @@ namespace Assets.Mine.Core.Scripts.Gameplay.FoodFolder
         public void Initialize()
         {
             _signalBus.Subscribe<FoodClickedSignal>(OnClickedFood);
+            _signalBus.Subscribe<MatchHappenedSignal>(OnMatchHappened);
         }
 
         public void Dispose()
         {
             _signalBus.TryUnsubscribe<FoodClickedSignal>(OnClickedFood);
+            _signalBus.TryUnsubscribe<MatchHappenedSignal>(OnMatchHappened);
         }
 
         private void OnClickedFood(FoodClickedSignal signal)
         {
-            if(TryPlace(signal.Food))
-            {
-                signal.Food.SetPhysics(false);
-            }
+            if (CanPlace() == false)
+                return;
+
+            TryPlace(signal.Food).Forget();
         }
 
-        private bool TryPlace(FoodView food)
+        private bool CanPlace()
         {
-            var ind = _platform.GetFirstEmptyIndex();
-            if(ind == Defines.AllFull)
-                return false;
+            return _platform.GetFirstEmptyIndex() != Defines.AllFull;
+        }
 
-            int emptyIndex = _platform.GetFirstEmptyIndex(); 
-            _platform.SetOccupationStatus(emptyIndex, true);
+        private async UniTask TryPlace(FoodView food)
+        {
+            //todo refactor all movement-animation logic.
+            //todo place same objects near by near
 
-            food.transform.DOMove(_platform.GetPartPosition(emptyIndex), 0.25f).SetAutoKill(true).SetEase(Ease.InCubic);
-            food.transform.DORotateQuaternion(UnityEngine.Quaternion.identity, 0.25f).SetAutoKill(true);
+            int gonnaPlaceIndex = _platform.GetPlaceIndex(food.Data.foodID);
+            Debug.Log($"PlaceIndex: {gonnaPlaceIndex}".ToBold());
+
+            _platform.SetOccupationStatus(gonnaPlaceIndex, food, true);
+
+            food.transform.DOMove(_platform.GetPartPosition(gonnaPlaceIndex), 0.25f).SetAutoKill(true).SetEase(Ease.InCubic);
+            food.transform.DORotateQuaternion(Quaternion.identity, 0.25f).SetAutoKill(true);
             food.IsSelected = true;
+            food.SetPhysics(false);
 
-            _signalBus.TryFire(new FoodPlacedSignal(){Food = food, PlacedIndex = emptyIndex});
+            await UniTask.Delay(TimeSpan.FromMilliseconds(300));
 
-            return true;
+            _signalBus.TryFire(new FoodPlacedSignal(){Food = food, PlacedIndex = gonnaPlaceIndex });
+        }
+
+        private void OnMatchHappened(MatchHappenedSignal signal)
+        {
+            //todo set occupation status
+            for (int i = 0; i < signal.IndexFoodTuples.Count; i++)
+            {
+                _platform.SetOccupationStatus(signal.IndexFoodTuples[i].Item1, null, false);
+                //todo animation
+                UnityEngine.Object.Destroy(signal.IndexFoodTuples[i].Item2.gameObject);
+            }
+
+            _platform.ReOrderAll();
         }
     }
 }

@@ -14,15 +14,15 @@ namespace Assets.Mine.Core.Scripts.Injection
         [SerializeField] private Transform _foodParent;
         [SerializeField] private FoodDatabase foodDatabase;
         [SerializeField] private LevelDatabase levelDatabase;
-        [SerializeField] private Platform platform;
+        [SerializeField] private Transform platform;
 
         public override void InstallBindings()
         {
             Container.BindInstance(_foodParent);
             Container.BindInstance(foodDatabase);
             Container.BindInstance(levelDatabase);
-            Container.BindInstance(platform);
 
+            Container.BindInterfacesAndSelfTo<Platform>().AsSingle().WithArguments(platform);
             Container.BindInterfacesAndSelfTo<FoodPlacer>().AsSingle();
             Container.BindInterfacesAndSelfTo<MatchHandler>().AsSingle();
             Container.Bind<FoodCreator>().AsSingle();
@@ -41,4 +41,3 @@ namespace Assets.Mine.Core.Scripts.Injection
         }
     }
 }
-
