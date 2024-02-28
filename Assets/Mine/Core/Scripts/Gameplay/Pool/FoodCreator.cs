@@ -26,7 +26,7 @@ namespace Assets.Mine.Core.Scripts.Gameplay.Pool
             return _diContainer.InstantiatePrefab(prefab, new GameObjectCreationParameters()
             {
                 ParentTransform = _parent,
-                Position = (Random.insideUnitSphere * 2.5f) + (Vector3.up * Random.Range(1,3))
+                Position = (Random.insideUnitSphere * 2.5f) + (Vector3.up * Random.Range(3,5))
             }).GetComponent<FoodView>();
         }
     }

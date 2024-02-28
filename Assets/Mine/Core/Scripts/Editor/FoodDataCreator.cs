@@ -80,7 +80,7 @@ namespace Mine.Core.Scripts.Editor
 
             foreach (var path in paths)
             {
-                Object obj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(path);
+                Object obj = AssetDatabase.LoadAssetAtPath<Object>(path);
                 Texture2D preview = AssetPreview.GetAssetPreview(obj);
 
                 GUILayout.BeginHorizontal();

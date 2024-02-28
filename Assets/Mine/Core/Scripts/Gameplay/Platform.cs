@@ -2,10 +2,10 @@ using Assets.Mine.Core.Scripts.Framework.Extensions;
 using Assets.Mine.Core.Scripts.Gameplay.FoodFolder;
 using Assets.Mine.Core.Scripts.Gameplay.Signals;
 using Cysharp.Threading.Tasks;
-using DG.Tweening;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
 using UnityEngine;
 using Zenject;
 
@@ -15,6 +15,7 @@ namespace Assets.Mine.Core.Scripts.Gameplay
     {
         public Transform Transform { get; set; }
         public bool IsOccupied { get; set; }
+        public FoodView CurrentFood{ get; set; }
 
         public Vector3 GetPlacePosition()
         {
@@ -27,6 +28,8 @@ namespace Assets.Mine.Core.Scripts.Gameplay
         private readonly SignalBus _signalBus;
         private readonly Transform _transform;
         private readonly FoodPlacer _foodPlacer;
+        
+        [Inject] private readonly MatchHandler _matchHandler;
 
         public Platform(SignalBus signalBus, Transform transform, FoodPlacer foodPlacer)
         {
@@ -36,15 +39,15 @@ namespace Assets.Mine.Core.Scripts.Gameplay
         }
 
         private readonly List<PlatformPart> _parts = new();
-        public FoodView[] Foods { get; private set; }
+        public List<PlatformPart> Parts => _parts;
+        //public FoodView[] Foods { get; private set; }
 
-        public int PlatformLength => _parts.Count;
+        private int PlatformLength => _parts.Count;
 
         public void Initialize() 
         {
             InitArrays();
             _signalBus.Subscribe<FoodClickedSignal>(OnFoodClicked);
-            _signalBus.Subscribe<MatchHappenedSignal>(OnMatchHappened);
             _signalBus.Subscribe<MatchAnimationFinishedSignal>(OnMatchAnimationFinished);
         }
 
@@ -60,13 +63,12 @@ namespace Assets.Mine.Core.Scripts.Gameplay
                 });
             }
 
-            Foods = new FoodView[PlatformLength];
+            //Foods = new FoodView[PlatformLength];
         }
 
         public void Dispose()
         {
             _signalBus.TryUnsubscribe<FoodClickedSignal>(OnFoodClicked);
-            _signalBus.TryUnsubscribe<MatchHappenedSignal>(OnMatchHappened);
             _signalBus.TryUnsubscribe<MatchAnimationFinishedSignal>(OnMatchAnimationFinished);
         }
 
@@ -79,121 +81,170 @@ namespace Assets.Mine.Core.Scripts.Gameplay
         private void Place(FoodClickedSignal signal)
         {
             int placeIndex = GetPlaceIndex(signal.Food.Data.foodID);
-            Debug.Log($"PlaceIndex: {placeIndex}".ToBold());
+            Debug.Log($"PlaceIndex: {placeIndex}".ToBold().ToColor(new Color32(207,186,250,255)));
 
             signal.Food.IsSelected = true;
             signal.Food.SetPhysics(false);
 
             SetOccupationStatus(placeIndex, signal.Food, true);
-
-            _signalBus.TryFire(new FoodPlacedSignal()
+            
+            _signalBus.TryFire(new FoodPlacingMovementStartSignal()
             {
                 Food = signal.Food,
                 PlacedIndex = placeIndex,
                 PlacePosition = GetPartPosition(placeIndex)
             });
+            
+            bool b = _matchHandler.IsThereAnyMatchCheck(out var matches); //_matchHandler.IsThereAnyMatch();
+             Debug.Log(b ?
+                 "There is Match"
+                     .ToBold()
+                     .ToColor(new Color(0.9f, 0.1f, 0.9f)) :
+                 "No Match".
+                     ToBold()
+                     .ToColor(new Color(.1f, .1f, .1f)));
+
+             if (!b) return;
+             //SetOccupationStatusForMatchElements(matches);
+             //MoveAllLeftSide();
+             //todo maybe crate another MatchDetected Signal and sub to it
+             _matchHandler.RequestMatch(matches);
         }
 
-        private void OnMatchHappened(MatchHappenedSignal signal)
+        private void SetOccupationStatusForMatchElements(IEnumerable<(int index, FoodView food)> pairs)
         {
-            signal.IndexFoodTuples.ForEach(tuple =>
+            foreach ((int index, FoodView food) pair in pairs)
             {
-                SetOccupationStatus(tuple.index, null, false);
-            });
+                int correctIndex = Parts.FindIndex(part => ReferenceEquals(part.CurrentFood, pair.food));
+                Debug.Log($"Correct Index: {correctIndex}");
+                SetOccupationStatus(correctIndex /*pair.index*/, null, false);
+            }
         }
 
         private void OnMatchAnimationFinished(MatchAnimationFinishedSignal signal)
         {
+            SetOccupationStatusForMatchElements(signal.IndexFoodTuples);
             MoveAllLeftSide();
+            ReorderAllMovement();
         }
 
-        public void SetOccupationStatus(int indx, FoodView food, bool occupied)
+        private void SetOccupationStatus(int idx, FoodView food, bool occupied)
         {
-            if (occupied && _parts[indx].IsOccupied)
+            if (occupied && _parts[idx].IsOccupied)
             {
-                MoveAllRightSide(indx);
+                MoveAllRightSide(idx);
+                ReorderAllMovement();
+                
                 Debug.Log("Already occupied"
                     .ToBold()
                     .ToColor(new Color(0.75f, 0.25f, 0.45f, 1.0f)));
             }
 
-            _parts[indx].IsOccupied = occupied;
-            Foods[indx] = food;
+            _parts[idx].IsOccupied = occupied;
+            _parts[idx].CurrentFood = food;
+            //Foods[idx] = food;
+
+            Debug.Log($"Occupation: {occupied}".ToBold());
+        }
+        
+        public void ReorderAllMovement()
+        {
+            for (int i = 0; i < _parts.Count; i++)
+            {
+                FoodView food = _parts[i].CurrentFood;
+                if (food == null)
+                    continue;
+
+                Vector3 placePosition = GetPartPosition(i);
+                _foodPlacer.SlideTheFood(food, placePosition).Forget();
+            }
         }
 
-        public void MoveAllRightSide(int startIndex)
+        private void MoveAllRightSide(int startIndex)
         {
+            Debug.Log("Move All Right Side".ToBold().ToColor(new Color(.15f, .5f, .8f)));
             int lastFullIndex = GetLastFullIndex();
             Debug.Log($"Last Occupied Index: {lastFullIndex}".ToBold());
 
             for (int i = lastFullIndex; i >= startIndex; i--)
             {
-                if (Foods[i] == null)
+                if (_parts[i].CurrentFood == null)
                     continue;
 
-                FoodView food = Foods[i];
-                Foods[i + 1] = food;
+                FoodView food = _parts[i].CurrentFood;
                 _parts[i + 1].IsOccupied = true;
-
-                //todo refactor not here
-                _foodPlacer.SlideTheFood(food, GetPartPosition(i + 1)).Forget();
+                _parts[i + 1].CurrentFood = food;
             }
         }
 
-        public void MoveAllLeftSide()
+        private void MoveAllLeftSide()
         {
-            for (int i = 0; i < Foods.Length; i++)
+            for (int i = 0; i < _parts.Count; i++)
             {
-                if (Foods[i] == null)
+                if (_parts[i].CurrentFood == null)
                     continue;
 
-                FoodView food = Foods[i];
-
-                //todo first make empty
-                _parts[i].IsOccupied = false;
-                Foods[i] = null;
+                FoodView food = _parts[i].CurrentFood;
                 
-                //then find the empty
+                _parts[i].IsOccupied = false;
+                _parts[i].CurrentFood = null;
+                
                 int empty = GetFirstEmptyIndex();
                 _parts[empty].IsOccupied = true;
-                Foods[empty] = food;
+                _parts[empty].CurrentFood = food;
+            }
+        }
+        
+        public void Reset()
+        {
+            foreach (var part in _parts)
+            {
+                part.IsOccupied = false;
+            }
 
-                //todo refactor not here
-                _foodPlacer.SlideTheFood(food, GetPartPosition(empty)).Forget();
+            for (var i = 0; i < _parts.Count; i++)
+            {
+                var food = _parts[i].CurrentFood;
+                if (food == null)
+                    continue;
+                food.GetComponent<Rigidbody>().AddForce(Vector3.forward * 2f, ForceMode.Impulse);
+                food.SetPhysics(true);
+                food.IsSelected = false;
+                food.IsPlaced = false;
+                food.MarkedForMatch = false;
+                food.Sequence.Kill();
+                _parts[i].CurrentFood = null;
             }
         }
 
-        public int GetPlaceIndex(int foodId)
+        private int GetPlaceIndex(int foodId)
         {
             if (AllEmpty()) return 0;
 
-            if (IsThereAnySameFood(foodId))
-                return GetFirstNeighborIndex(foodId);
-            else
-                return GetFirstEmptyIndex();
+            return IsThereAnySameFood(foodId) ? GetFirstNeighborIndex(foodId) : GetFirstEmptyIndex();
         }
 
-        public int GetFirstNeighborIndex(int foodId)
+        private int GetFirstNeighborIndex(int foodId)
         {
             return FindLastFoodIndex(foodId) + 1;
         }
 
-        public int FindLastFoodIndex(int foodId)
+        private int FindLastFoodIndex(int foodId)
         {
-            int index = 0;
-            for (int i = 0; i < Foods.Length; i++)
+            int idx = 0;
+            for (int i = 0; i < _parts.Count; i++)
             {
-                FoodView temp = Foods[i];
+                FoodView temp = _parts[i].CurrentFood;
                 if (temp == null || temp.Data.foodID != foodId)
                     continue;
 
-                index = i;
+                idx = i;
             }
 
-            return index;
+            return idx;
         }
 
-        public int GetFirstEmptyIndex()
+        private int GetFirstEmptyIndex()
         {
             if (AnyEmpty() == false)
                 return Defines.AllFull;
@@ -207,31 +258,22 @@ namespace Assets.Mine.Core.Scripts.Gameplay
             return Defines.AllFull;
         }
 
-        public int GetLastFullIndex()
+        private int GetLastFullIndex()
         {
             int lastFullIndex = 0;
-            for (int i = 0; i < Foods.Length; i++)
+            for (int i = 0; i < _parts.Count; i++)
             {
-                if (Foods[i] != null) lastFullIndex = i;
+                if (_parts[i].CurrentFood != null) lastFullIndex = i;
             }
             return lastFullIndex;
         }
 
-        public bool IsThereAnySameFood(int id)
-        {
-            foreach (var item in Foods)
-            {
-                if (item == null)
-                    continue;
-
-                if (item.Data.foodID == id) return true;
-            }
-            return false;
-        }
-
+        private bool IsThereAnySameFood(int id)  => 
+            _parts.Where(part => part.CurrentFood != null)
+                .Any(part => part.CurrentFood.Data.foodID == id);
         public bool Full() => _parts.All(p => p.IsOccupied);
-        public bool AllEmpty() => _parts.All(p => p.IsOccupied == false);
-        public bool AnyEmpty() => _parts.Any(p => p.IsOccupied == false);
-        public Vector3 GetPartPosition(int index) => _parts[index].GetPlacePosition();
+        private bool AllEmpty() => _parts.All(p => p.IsOccupied == false);
+        private bool AnyEmpty() => _parts.Any(p => p.IsOccupied == false);
+        private Vector3 GetPartPosition(int idx) => _parts[idx].GetPlacePosition();
     }
 }

@@ -36,10 +36,19 @@ Todo Move All signals in a file
 Signal flow
     FoodClickedSignal
     ..
-    FoodPlacedSignal
+    FoodPlacingMovementStartSignal
     ..
     FoodPlacingMovementFinishedSignal
     ..
-    MatchHappenedSignal (if)
+    MatchAnimationStartSignal (if)
     ..
     MatchAnimationFinishedSignal
+    
+New Flow
+    Click Food and set Index immediately
+    And Start Movement
+    Food movement placing finished
+    Check For Match
+    set match food indexes null
+    and move platform foods left
+    and then slide them (movement)

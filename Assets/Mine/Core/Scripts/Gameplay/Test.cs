@@ -1,6 +1,6 @@
 using Assets.Mine.Core.Scripts.Framework.Extensions;
-using Assets.Mine.Core.Scripts.Gameplay.FoodFolder;
 using System.Text;
+using UniRx;
 using UnityEngine;
 using Zenject;
 
@@ -10,22 +10,44 @@ namespace Assets.Mine.Core.Scripts.Gameplay
     {
         [Inject] private Platform _platform;
 
+        private void Awake()
+        {
+            Observable.EveryUpdate().Subscribe(_ =>
+            {
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    _platform.ReorderAllMovement();
+                }
+
+                if (Input.GetKeyDown(KeyCode.R))
+                {
+                    _platform.Reset();
+                }
+            }).AddTo(gameObject);
+        }
+
         private void OnGUI()
         {
-            if(_platform == null || _platform.Foods == null) return;
+            if(_platform?.Parts == null) return;
 
             StringBuilder builder = new StringBuilder();
-            for (int i = 0;i < _platform.Foods.Length; i++)
-            {
-                FoodView temp = _platform.Foods[i];
-                if (temp == null)
-                    builder.Append("-1,");
-                else
-                    builder.Append($"{temp.Data.foodID},".ToColor(Color.yellow));
-            }
+            builder.Append('[');
+            foreach (var part in _platform.Parts)
+                builder.Append(part.CurrentFood == null ? "-1," : $"{part.CurrentFood.Data.foodID},".ToColor(Color.yellow));
+            builder.Append(']');
             GUI.Label(new Rect(10, 10, 200, 50),
                     $"{builder}".ToColor(Color.white), 
-                    new GUIStyle() { fontSize = 65,
+                    new GUIStyle { fontSize = 45,
+                    richText = true,});
+
+            StringBuilder builder2 = new StringBuilder();
+            builder2.Append('[');
+            foreach (var part in _platform.Parts)
+                builder2.Append(part.IsOccupied == false? "e," : $"o,".ToColor(Color.yellow));
+            builder2.Append(']');
+            GUI.Label(new Rect(10, 50, 200, 50),
+                $"{builder2}".ToColor(Color.white), 
+                new GUIStyle { fontSize = 45,
                     richText = true,});
         }
     }

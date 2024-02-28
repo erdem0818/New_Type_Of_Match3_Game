@@ -14,10 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelDataPairs:
   - food: {fileID: 11400000, guid: 654a48f8c64eba74f96d0c9742a240f8, type: 2}
-    count: 5
+    count: 6
   - food: {fileID: 11400000, guid: e07e1983e1d76534e9a78c1e092e4ea8, type: 2}
-    count: 5
+    count: 6
   - food: {fileID: 11400000, guid: 582c22947861e7d4ea8ec161c4a1363d, type: 2}
-    count: 5
+    count: 6
   - food: {fileID: 11400000, guid: 93ece9051d352894d9c67fc9fd7df876, type: 2}
-    count: 5
+    count: 6
+  - food: {fileID: 11400000, guid: ea79046200c208943910d66896b5c4c7, type: 2}
+    count: 6
+  - food: {fileID: 11400000, guid: 1b3619649122274488c2500b121fdfcd, type: 2}
+    count: 6
+  - food: {fileID: 11400000, guid: df3c771fa4b10134dbabb1380fcc6628, type: 2}
+    count: 6
+  - food: {fileID: 11400000, guid: 8f0e3b2c55664a64799a2917adf0ebbd, type: 2}
+    count: 6
+  - food: {fileID: 11400000, guid: 169edb46c15d27a4e849ac26b1b39e25, type: 2}
+    count: 6

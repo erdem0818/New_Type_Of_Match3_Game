@@ -36,9 +36,9 @@ namespace Assets.Mine.Core.Scripts.Injection
             SignalBusInstaller.Install(Container);
             
             Container.DeclareSignal<FoodClickedSignal>().OptionalSubscriber();
-            Container.DeclareSignal<FoodPlacedSignal>().OptionalSubscriber();
+            Container.DeclareSignal<FoodPlacingMovementStartSignal>().OptionalSubscriber();
             Container.DeclareSignal<FoodPlacingMovementFinishedSignal>().OptionalSubscriber();
-            Container.DeclareSignal<MatchHappenedSignal>().OptionalSubscriber();
+            Container.DeclareSignal<MatchAnimationStartSignal>().OptionalSubscriber();
             Container.DeclareSignal<MatchAnimationFinishedSignal>().OptionalSubscriber();
         }
     }

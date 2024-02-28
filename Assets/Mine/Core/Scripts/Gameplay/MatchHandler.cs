@@ -1,17 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Assets.Mine.Core.Scripts.Framework.Extensions;
 using Assets.Mine.Core.Scripts.Gameplay.FoodFolder;
 using Zenject;
 using UnityEngine;
-using Assets.Mine.Core.Scripts.Framework.Extensions;
+using Cysharp.Threading.Tasks;
 
 namespace Assets.Mine.Core.Scripts.Gameplay
 {
-    public struct MatchHappenedSignal
+    public struct MatchAnimationStartSignal
     {
         public List<(int index, FoodView food)> IndexFoodTuples {get; set;}
-        public Vector3 MidPosition { get; set;}
+        //public Vector3 MidPosition { get; set;}
     }
 
     public class MatchHandler : IInitializable, IDisposable
@@ -37,31 +38,63 @@ namespace Assets.Mine.Core.Scripts.Gameplay
             _signalBus.TryUnsubscribe<FoodPlacingMovementFinishedSignal>(OnFoodPlacingMovementFinished);
         }
 
-        private void OnFoodPlacingMovementFinished(FoodPlacingMovementFinishedSignal signal)
+        public void RequestMatch(IEnumerable<(int index, FoodView food)> pairs)
         {
-            if (IsThereAnyMatch() == false)
-            {
-                if(_platform.Full())
-                {
-                    Debug.Log($"FAIL"
-                        .ToBold()
-                        .ToColor(new Color(0.85f, 0.15f, 0.05f)));
-                }
-
-                return;
-            }
-
-            Debug.Log("MATCH".ToBold().ToColor(Color.blue));
+            PlayRequestedMatchAnimation(pairs.ToList()).Forget();
         }
 
-        private bool IsThereAnyMatch()
+        private async UniTask PlayRequestedMatchAnimation(IList<(int index, FoodView food)> pairs)
         {
-            int len = _platform.Foods.Length - _requiredMatchCount + 1;
+            //Info for debug
+            await UniTask.Delay(2000);
+            
+            var uts = Enumerable.Select(pairs, pair 
+                => UniTask.WaitUntil(() => pair.food.IsPlaced && pair.food.IsSliding == false)).ToList();
+
+            await UniTask.WhenAll(uts);
+
+            _signalBus.TryFire(new MatchAnimationStartSignal
+            {
+                IndexFoodTuples = pairs.ToList(),
+                //MidPosition = midPosition
+            });
+        }
+
+        private void OnFoodPlacingMovementFinished(FoodPlacingMovementFinishedSignal signal)
+        {
+            if (IsThereAnyMatchCheck(out _)) return;
+            
+            if(_platform.Full())
+            {
+                Debug.Log($"FAIL"
+                    .ToBold()
+                    .ToColor(new Color(0.85f, 0.15f, 0.05f)));
+            }
+        }
+
+        /*private bool IsThereAnyMatch()
+        {
+            if (!IsThereAnyMatchCheck(out var matches)) return false;
+            
+            Debug.Log("MATCH".ToBold().ToColor(Color.blue));
+
+            _signalBus.TryFire(new MatchAnimationStartSignal()
+            {
+                IndexFoodTuples = matches,
+                MidPosition = matches[1].food.transform.position + Vector3.up * 0.5f
+            });
+            return true;
+        }*/
+
+        public bool IsThereAnyMatchCheck(out List<(int index, FoodView food)> matches)
+        {
+            int len = _platform.Parts.Count - _requiredMatchCount + 1;
             for(int i = 0; i < len; i++) 
             {
-                if (_platform.Foods[i] == null) continue;
+                if (_platform.Parts[i].CurrentFood == null) continue;
+                if (_platform.Parts[i].CurrentFood.MarkedForMatch) continue;
 
-                FoodView head = _platform.Foods[i];
+                FoodView head = _platform.Parts[i].CurrentFood;
                 int headID = head.Data.foodID;
 
                 List<FoodView> looks = new()
@@ -71,7 +104,7 @@ namespace Assets.Mine.Core.Scripts.Gameplay
 
                 for (int j = 1; j < _requiredMatchCount; j++)
                 {
-                    FoodView neighbor = _platform.Foods[i + j];
+                    FoodView neighbor = _platform.Parts[i + j].CurrentFood;
                     looks.Add(neighbor);
                 }
 
@@ -80,27 +113,22 @@ namespace Assets.Mine.Core.Scripts.Gameplay
 
                 bool same = looks.All(fv => fv.Data.foodID == headID);
 
-                if(same)
+                if (!same) continue;
+                List<(int index, FoodView food)> temp = new()
                 {
-                    List<(int index, FoodView food)> matches = new()
-                    {
-                        //not hard code 3 -> required
-                        new ValueTuple<int, FoodView>(i, looks[0]),
-                        new ValueTuple<int, FoodView>(i + 1, looks[1]),
-                        new ValueTuple<int, FoodView>(i + 2, looks[2])
-                    };
+                    //Info not hard code 3 -> required
+                    new ValueTuple<int, FoodView>(i, looks[0]),
+                    new ValueTuple<int, FoodView>(i + 1, looks[1]),
+                    new ValueTuple<int, FoodView>(i + 2, looks[2])
+                };
+                
+                temp.ForEach(pr => pr.food.MarkedForMatch = true);
 
-                    //todo but wait animation
-                    _signalBus.TryFire(new MatchHappenedSignal()
-                    {
-                        IndexFoodTuples = matches,
-                        MidPosition = matches[1].food.transform.position + Vector3.up * 0.25f
-                    });
-
-                    return true;
-                }
+                matches = temp;
+                return true;
             }
 
+            matches = null;
             return false;
         }
     }

@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using Assets.Mine.Core.Scripts.Framework.Extensions;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
@@ -7,7 +9,7 @@ using Zenject;
 
 namespace Assets.Mine.Core.Scripts.Gameplay.FoodFolder
 {
-    public struct FoodPlacedSignal
+    public struct FoodPlacingMovementStartSignal
     {
         public int PlacedIndex { get; set; }
         public FoodView Food { get; set; }
@@ -18,7 +20,9 @@ namespace Assets.Mine.Core.Scripts.Gameplay.FoodFolder
     {}
 
     public struct MatchAnimationFinishedSignal
-    {}
+    {
+        public List<(int index, FoodView food)> IndexFoodTuples {get; set;}
+    }
 
     public class FoodPlacer : IInitializable, IDisposable
     {
@@ -31,52 +35,101 @@ namespace Assets.Mine.Core.Scripts.Gameplay.FoodFolder
 
         public void Initialize()
         {
-            _signalBus.Subscribe<FoodPlacedSignal>(OnFoodPlaced);
-            _signalBus.Subscribe<MatchHappenedSignal>(OnMatchHappened);
+            _signalBus.Subscribe<FoodPlacingMovementStartSignal>(OnFoodPlacingMovementStart);
+            _signalBus.Subscribe<MatchAnimationStartSignal>(OnMatchDetected);
         }
 
         public void Dispose()
         {
-            _signalBus.TryUnsubscribe<FoodPlacedSignal>(OnFoodPlaced);
-            _signalBus.TryUnsubscribe<MatchHappenedSignal>(OnMatchHappened);
+            _signalBus.TryUnsubscribe<FoodPlacingMovementStartSignal>(OnFoodPlacingMovementStart);
+            _signalBus.TryUnsubscribe<MatchAnimationStartSignal>(OnMatchDetected);
         }
 
-        private void OnFoodPlaced(FoodPlacedSignal signal)
+        private void OnFoodPlacingMovementStart(FoodPlacingMovementStartSignal signal)
         {
-            PlaceFoodOnPlatformAsync(signal.PlacedIndex, signal.Food, signal.PlacePosition)
-                .Forget();
+            PlaceFoodOnPlatformAsync(signal.Food, signal.PlacePosition).Forget();
         }
-
-        public async UniTask PlaceFoodOnPlatformAsync(int index, FoodView food, Vector3 placePosition)
+        
+        private async UniTask PlaceFoodOnPlatformAsync(FoodView food, Vector3 placePosition)
         {
-            //info move stuff
             Sequence seq = DOTween.Sequence();
-            await seq
-                .Append(food.transform.DOMove(placePosition, 0.45f))
-                .Join(food.transform.DORotateQuaternion(Quaternion.identity, 0.45f))
+            food.Sequence = seq
+                .Append(food.transform.DOMove(placePosition, .5f))
+                .Join(food.transform.DORotateQuaternion(Quaternion.identity, .5f))
+                .SetId(food.GetInstanceID())
                 .SetEase(Ease.OutCubic)
-                .SetAutoKill(true)
-                .AsyncWaitForCompletion();
+                .SetAutoKill(true);
+            
+            await seq.AsyncWaitForCompletion()
+                .AsUniTask();
 
+            food.IsPlaced = true;
             _signalBus.TryFire<FoodPlacingMovementFinishedSignal>();
         }
 
         public async UniTask SlideTheFood(FoodView food, Vector3 placePosition)
         {
-            await food.transform.DOMove(placePosition, 0.1f)
-                .SetAutoKill(true)
-                .AsyncWaitForCompletion();
+            food.Sequence?.Kill();
+            food.SlideTween?.Kill();
+            food.IsSliding = true;
+            
+            food.SlideTween = food.transform.DOMove(placePosition, .15f)
+                .SetId(food.GetInstanceID())
+                .SetAutoKill(true);
+
+            await food.SlideTween.AsyncWaitForCompletion().AsUniTask();
+            
+            food.IsSliding = false;
         }
 
-        private void OnMatchHappened(MatchHappenedSignal signal)
+        private void OnMatchDetected(MatchAnimationStartSignal signal)
         {
-            for (int i = 0; i < signal.IndexFoodTuples.Count; i++)
-            {
-                //todo animation
-                UnityEngine.Object.Destroy(signal.IndexFoodTuples[i].food.gameObject);
-            }
+            PlayMatchAnimationAsync(signal).Forget();   
+        }
 
-            _signalBus.TryFire<MatchAnimationFinishedSignal>();
+        private async UniTask PlayMatchAnimationAsync(MatchAnimationStartSignal signal)
+        {
+            await PlayMatchAnimationAsync(signal.IndexFoodTuples);
+            
+            //Info after awaiting
+            _signalBus.TryFire(new MatchAnimationFinishedSignal
+            {
+                IndexFoodTuples = signal.IndexFoodTuples
+            });
+            
+            Debug.Log("All Match Anim Finished".ToBold().ToColor(new Color(0.75f, 0.75f, 0.25f)));
+
+            foreach (var pair in signal.IndexFoodTuples)
+            {
+                Debug.Log($"index: {pair.index}");
+            }
+        }
+
+        private async UniTask PlayMatchAnimationAsync(IEnumerable<(int index, FoodView food)> pairs)
+        {
+            var toList = pairs.ToList();
+            
+            Debug.Log("waiting for all foods placed".ToBold());
+            
+            var uts = Enumerable.Select(toList, pair=> UniTask.WaitUntil(() => pair.food.IsPlaced)).ToList();
+            
+            await UniTask.WhenAll(uts);
+            
+            Debug.Log("waiting for all foods placed finished".ToBold());
+
+            Vector3 midPosition = toList[1].food.transform.position + Vector3.up * .5f;
+            var tasks = Enumerable.Select(toList, pair => pair.food.transform.DOMove(midPosition, 0.1f)
+                    .SetEase(Ease.OutQuad)
+                    .OnComplete(() =>
+                        {
+                            Debug.Log("Anim complete".ToBold());
+                            UnityEngine.Object.Destroy(pair.food.gameObject);
+                        })
+                    .AsyncWaitForCompletion()
+                    .AsUniTask())
+                .ToList();
+
+            await UniTask.WhenAll(tasks);
         }
     }
 }
