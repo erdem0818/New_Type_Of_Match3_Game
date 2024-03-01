@@ -1,4 +1,4 @@
-using Assets.Mine.Core.Scripts.Framework.UI.ButtonEA;
+using Mine.Core.Scripts.Framework.UI.Button_Folder;
 
 namespace Assets.Mine.Core.Scripts.Gameplay.UI
 {

@@ -4,13 +4,13 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-namespace Assets.Mine.Core.Scripts.Framework.UI.ButtonEA
+namespace Mine.Core.Scripts.Framework.UI.Button_Folder
 {
     [RequireComponent(typeof(Button))]
     public abstract class Button_EA : MonoBehaviour
     {
         private Button _button;
-        private List<UnityAction> _callbacks = new();
+        private readonly List<UnityAction> _callbacks = new();
         private Tween _tween;
 
         private void Awake() 

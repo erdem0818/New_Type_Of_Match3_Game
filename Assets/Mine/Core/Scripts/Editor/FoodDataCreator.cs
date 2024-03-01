@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
-using Assets.Mine.Core.Scripts.Framework.Extensions;
-using Assets.Mine.Core.Scripts.Framework.Extensions_Folder;
 using Assets.Mine.Core.Scripts.Gameplay;
 using Assets.Mine.Core.Scripts.Gameplay.FoodFolder;
+using Mine.Core.Scripts.Framework.Extensions_Folder;
 using UnityEditor;
 using UnityEngine;
 using Zenject;

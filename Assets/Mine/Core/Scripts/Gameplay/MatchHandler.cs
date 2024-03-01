@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Assets.Mine.Core.Scripts.Framework.Extensions;
 using Assets.Mine.Core.Scripts.Gameplay.FoodFolder;
 using Zenject;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
+using Mine.Core.Scripts.Framework.Extensions_Folder;
 
 namespace Assets.Mine.Core.Scripts.Gameplay
 {
@@ -46,7 +46,7 @@ namespace Assets.Mine.Core.Scripts.Gameplay
         private async UniTask PlayRequestedMatchAnimation(IList<(int index, FoodView food)> pairs)
         {
             //Info for debug
-            await UniTask.Delay(2000);
+            //await UniTask.Delay(2000);
             
             var uts = Enumerable.Select(pairs, pair 
                 => UniTask.WaitUntil(() => pair.food.IsPlaced && pair.food.IsSliding == false)).ToList();

@@ -1,15 +1,19 @@
-using Assets.Mine.Core.Scripts.Framework.Extensions;
 using System.Text;
+using Assets.Mine.Core.Scripts.Gameplay;
+using Mine.Core.Scripts.Framework.Extensions_Folder;
+using Mine.Core.Scripts.Framework.UI.Panel_Folder;
 using UniRx;
 using UnityEngine;
 using Zenject;
 
-namespace Assets.Mine.Core.Scripts.Gameplay
+namespace Mine.Core.Scripts.Gameplay
 {
     public class Test : MonoBehaviour
     {
         [Inject] private Platform _platform;
 
+        [SerializeField] private DefaultPanel winPanel;
+        
         private void Awake()
         {
             Observable.EveryUpdate().Subscribe(_ =>
@@ -22,6 +26,13 @@ namespace Assets.Mine.Core.Scripts.Gameplay
                 if (Input.GetKeyDown(KeyCode.R))
                 {
                     _platform.Reset();
+                }
+                
+                if (Input.GetKeyDown(KeyCode.P))
+                {
+                    var panel = FindFirstObjectByType<DefaultPanel>(FindObjectsInactive.Include);
+                    panel.gameObject.SetActive(true);
+                    panel.Show();
                 }
             }).AddTo(gameObject);
         }

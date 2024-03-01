@@ -1,4 +1,3 @@
-using Assets.Mine.Core.Scripts.Framework.Extensions;
 using Assets.Mine.Core.Scripts.Gameplay.FoodFolder;
 using Assets.Mine.Core.Scripts.Gameplay.Signals;
 using Cysharp.Threading.Tasks;
@@ -6,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
+using Mine.Core.Scripts.Framework.Extensions_Folder;
 using UnityEngine;
 using Zenject;
 

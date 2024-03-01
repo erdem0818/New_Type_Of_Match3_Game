@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Assets.Mine.Core.Scripts.Framework.Extensions;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using Mine.Core.Scripts.Framework.Extensions_Folder;
 using UnityEngine;
 using Zenject;
 
@@ -116,10 +116,13 @@ namespace Assets.Mine.Core.Scripts.Gameplay.FoodFolder
             await UniTask.WhenAll(uts);
             
             Debug.Log("waiting for all foods placed finished".ToBold());
+            
+            //Vector3 midPosition = toList[1].food.transform.position + Vector3.up * .5f;
+            Vector3 midPosition = toList[0].food.transform.position;
 
-            Vector3 midPosition = toList[1].food.transform.position + Vector3.up * .5f;
-            var tasks = Enumerable.Select(toList, pair => pair.food.transform.DOMove(midPosition, 0.1f)
-                    .SetEase(Ease.OutQuad)
+            List<UniTask> tasks = Enumerable.Select(toList, pair => pair.food.transform.DOMove(midPosition, 0.25f)
+                    //.SetEase(Ease.OutQuad)
+                    .SetEase(Ease.InOutBack)
                     .OnComplete(() =>
                         {
                             Debug.Log("Anim complete".ToBold());
