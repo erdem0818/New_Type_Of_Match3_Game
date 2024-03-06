@@ -4,6 +4,7 @@ using Assets.Mine.Core.Scripts.Gameplay;
 using Assets.Mine.Core.Scripts.Gameplay.FoodFolder;
 using Mine.Core.Scripts.Framework.Extensions_Folder;
 using Mine.Core.Scripts.Gameplay;
+using Mine.Core.Scripts.Gameplay.Food_Folder;
 using UnityEditor;
 using UnityEngine;
 using Zenject;

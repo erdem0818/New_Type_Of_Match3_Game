@@ -1,11 +1,12 @@
+using Assets.Mine.Core.Scripts.Gameplay.FoodFolder;
 using DG.Tweening;
 using Mine.Core.Scripts.Gameplay.Signals;
-using UniRx.Triggers;
 using UniRx;
+using UniRx.Triggers;
 using UnityEngine;
 using Zenject;
 
-namespace Assets.Mine.Core.Scripts.Gameplay.FoodFolder
+namespace Mine.Core.Scripts.Gameplay.Food_Folder
 {
     public class FoodMovement
     {
@@ -57,12 +58,12 @@ namespace Assets.Mine.Core.Scripts.Gameplay.FoodFolder
 
         [SerializeField] private FoodData data;
         public FoodData Data => data;
-        private FoodMovement _foodMovement;
+        //private FoodMovement _foodMovement;
         
-        public bool IsSelected { get; set; } = false;
-        public bool IsPlaced { get; set; } = false;
-        public bool IsSliding { get; set; } = false;
-        public bool MarkedForMatch { get; set; } = false;
+        public bool IsSelected { get; set; }
+        public bool IsPlaced { get; set; }
+        public bool IsSliding { get; set; }
+        public bool MarkedForMatch { get; set; }
 
         public Sequence Sequence { get; set; }
         public Tween SlideTween { get; set; }

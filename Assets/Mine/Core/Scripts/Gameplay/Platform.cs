@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Assets.Mine.Core.Scripts.Gameplay;
-using Assets.Mine.Core.Scripts.Gameplay.FoodFolder;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Mine.Core.Scripts.Framework.Extensions_Folder;
@@ -41,10 +39,7 @@ namespace Mine.Core.Scripts.Gameplay
             _foodPlacer = foodPlacer;
         }
 
-        private readonly List<PlatformPart> _parts = new();
-        public List<PlatformPart> Parts => _parts;
-
-        private int PlatformLength => _parts.Count;
+        public List<PlatformPart> Parts { get; } = new();
 
         public void Initialize() 
         {
@@ -58,7 +53,7 @@ namespace Mine.Core.Scripts.Gameplay
             int childCount = _transform.childCount;
             for (int i = 0; i < childCount; i++)
             {
-                _parts.Add(new PlatformPart()
+                Parts.Add(new PlatformPart
                 {
                     Transform = _transform.GetChild(i),
                     IsOccupied = false
@@ -130,7 +125,7 @@ namespace Mine.Core.Scripts.Gameplay
 
         private void SetOccupationStatus(int idx, FoodView food, bool occupied)
         {
-            if (occupied && _parts[idx].IsOccupied)
+            if (occupied && Parts[idx].IsOccupied)
             {
                 MoveAllRightSide(idx);
                 ReorderAllMovement();
@@ -140,17 +135,17 @@ namespace Mine.Core.Scripts.Gameplay
                     .ToColor(new Color(0.75f, 0.25f, 0.45f, 1.0f)));
             }
 
-            _parts[idx].IsOccupied = occupied;
-            _parts[idx].CurrentFood = food;
+            Parts[idx].IsOccupied = occupied;
+            Parts[idx].CurrentFood = food;
 
             Debug.Log($"Occupation: {occupied}".ToBold());
         }
         
         public void ReorderAllMovement()
         {
-            for (int i = 0; i < _parts.Count; i++)
+            for (int i = 0; i < Parts.Count; i++)
             {
-                FoodView food = _parts[i].CurrentFood;
+                FoodView food = Parts[i].CurrentFood;
                 if (food == null)
                     continue;
 
@@ -167,18 +162,18 @@ namespace Mine.Core.Scripts.Gameplay
 
             for (int i = lastFullIndex; i >= startIndex; i--)
             {
-                if (_parts[i].CurrentFood == null)
+                if (Parts[i].CurrentFood == null)
                     continue;
 
-                FoodView food = _parts[i].CurrentFood;
-                _parts[i + 1].IsOccupied = true;
-                _parts[i + 1].CurrentFood = food;
+                FoodView food = Parts[i].CurrentFood;
+                Parts[i + 1].IsOccupied = true;
+                Parts[i + 1].CurrentFood = food;
             }
         }
 
         private void MoveAllLeftSide()
         {
-            foreach (var part in _parts)
+            foreach (var part in Parts)
             {
                 if (part.CurrentFood == null)
                     continue;
@@ -189,19 +184,19 @@ namespace Mine.Core.Scripts.Gameplay
                 part.CurrentFood = null;
                 
                 int empty = GetFirstEmptyIndex();
-                _parts[empty].IsOccupied = true;
-                _parts[empty].CurrentFood = food;
+                Parts[empty].IsOccupied = true;
+                Parts[empty].CurrentFood = food;
             }
         }
         
         public void Reset()
         {
-            foreach (var part in _parts)
+            foreach (var part in Parts)
             {
                 part.IsOccupied = false;
             }
 
-            foreach (var part in _parts)
+            foreach (var part in Parts)
             {
                 var food = part.CurrentFood;
                 if (food == null)
@@ -231,9 +226,9 @@ namespace Mine.Core.Scripts.Gameplay
         private int FindLastFoodIndex(int foodId)
         {
             int idx = 0;
-            for (int i = 0; i < _parts.Count; i++)
+            for (int i = 0; i < Parts.Count; i++)
             {
-                FoodView temp = _parts[i].CurrentFood;
+                FoodView temp = Parts[i].CurrentFood;
                 if (temp == null || temp.Data.foodID != foodId)
                     continue;
 
@@ -248,9 +243,9 @@ namespace Mine.Core.Scripts.Gameplay
             if (AnyEmpty() == false)
                 return Defines.AllFull;
 
-            for (int i = 0; i < _parts.Count; i++)
+            for (int i = 0; i < Parts.Count; i++)
             {
-                if (_parts[i].IsOccupied == false)
+                if (Parts[i].IsOccupied == false)
                     return i;
             }
 
@@ -260,19 +255,19 @@ namespace Mine.Core.Scripts.Gameplay
         private int GetLastFullIndex()
         {
             int lastFullIndex = 0;
-            for (int i = 0; i < _parts.Count; i++)
+            for (int i = 0; i < Parts.Count; i++)
             {
-                if (_parts[i].CurrentFood != null) lastFullIndex = i;
+                if (Parts[i].CurrentFood != null) lastFullIndex = i;
             }
             return lastFullIndex;
         }
 
         private bool IsThereAnySameFood(int id)  => 
-            _parts.Where(part => part.CurrentFood != null)
+            Parts.Where(part => part.CurrentFood != null)
                 .Any(part => part.CurrentFood.Data.foodID == id);
-        public bool Full() => _parts.All(p => p.IsOccupied);
-        private bool AllEmpty() => _parts.All(p => p.IsOccupied == false);
-        private bool AnyEmpty() => _parts.Any(p => p.IsOccupied == false);
-        private Vector3 GetPartPosition(int idx) => _parts[idx].GetPlacePosition();
+        public bool Full() => Parts.All(p => p.IsOccupied);
+        private bool AllEmpty() => Parts.All(p => p.IsOccupied == false);
+        private bool AnyEmpty() => Parts.Any(p => p.IsOccupied == false);
+        private Vector3 GetPartPosition(int idx) => Parts[idx].GetPlacePosition();
     }
 }

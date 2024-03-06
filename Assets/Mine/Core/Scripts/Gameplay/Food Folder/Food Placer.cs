@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Assets.Mine.Core.Scripts.Gameplay.FoodFolder;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Mine.Core.Scripts.Framework.Extensions_Folder;

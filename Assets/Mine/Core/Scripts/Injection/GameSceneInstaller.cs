@@ -1,15 +1,13 @@
-using Assets.Mine.Core.Scripts.Gameplay;
-using Zenject;
-using UnityEngine;
-using Assets.Mine.Core.Scripts.Gameplay.FoodFolder;
 using Assets.Mine.Core.Scripts.Gameplay.Database;
-using Assets.Mine.Core.Scripts.Gameplay.Pool;
 using Assets.Mine.Core.Scripts.Gameplay.Level;
+using Assets.Mine.Core.Scripts.Gameplay.Pool;
 using Mine.Core.Scripts.Gameplay;
 using Mine.Core.Scripts.Gameplay.Food_Folder;
 using Mine.Core.Scripts.Gameplay.Signals;
+using UnityEngine;
+using Zenject;
 
-namespace Assets.Mine.Core.Scripts.Injection
+namespace Mine.Core.Scripts.Injection
 {
     public class GameSceneInstaller : MonoInstaller
     {

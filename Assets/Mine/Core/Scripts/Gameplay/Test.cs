@@ -45,7 +45,10 @@ namespace Mine.Core.Scripts.Gameplay
             StringBuilder builder = new StringBuilder();
             builder.Append('[');
             foreach (var part in _platform.Parts)
-                builder.Append(part.CurrentFood == null ? "-1," : $"{part.CurrentFood.Data.foodID},".ToColor(Color.yellow));
+            {
+                Color color = part.IsLocked ? new Color(0.35f, 0.35f, 0.35f, 1.0f) : Color.yellow;
+                builder.Append(part.CurrentFood == null ? "-1," : $"{part.CurrentFood.Data.foodID},".ToColor(color));
+            }
             builder.Append(']');
             GUI.Label(new Rect(10, 10, 200, 50),
                     $"{builder}".ToColor(Color.white), 
