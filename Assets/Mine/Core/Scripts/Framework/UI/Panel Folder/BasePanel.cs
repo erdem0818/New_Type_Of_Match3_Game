@@ -24,8 +24,9 @@ namespace Mine.Core.Scripts.Framework.UI.Panel_Folder
         {
             FindCallbackAttributes();
         }
-
+        
         #region Reflection
+        //todo make this utility
         private void FindCallbackAttributes()
         {
             Component[] allComponents = GetComponentsInChildren<Component>();

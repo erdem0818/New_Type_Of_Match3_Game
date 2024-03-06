@@ -110,6 +110,7 @@ namespace Mine.Core.Scripts.Gameplay
         {
             foreach ((int index, FoodView food) pair in pairs)
             {
+                //fix this line ??
                 int correctIndex = Parts.FindIndex(part => ReferenceEquals(part.CurrentFood, pair.food));
                 Debug.Log($"Correct Index: {correctIndex}");
                 SetOccupationStatus(correctIndex /*pair.index*/, null, false);

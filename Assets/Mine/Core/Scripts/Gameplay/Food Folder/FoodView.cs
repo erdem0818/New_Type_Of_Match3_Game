@@ -8,81 +8,137 @@ using Zenject;
 
 namespace Mine.Core.Scripts.Gameplay.Food_Folder
 {
-    public class FoodMovement
+    public class FoodModel
     {
-        private readonly Transform _transform;
-        private readonly AnimationCurve _ease;
+        //reactive properties maybe, view responds these R.properties
+        // public FoodData Data { get; set; }
+        // public bool IsSelected { get; set; }
+        // public bool IsPlaced { get; set; }
+        // public bool IsSliding { get; set; }
+        // public bool MarkedForMatch { get; set; }
+        //
+        // public Sequence Sequence { get; set; }
+        // public Tween SlideTween { get; set; }
 
-        private Vector3 _startPosition;
-        private Vector3 _targetPosition;
-        private float _duration;
-
-        private float _counter = 0f;
-        private bool _start = false;
+        //todo remove setters ?
+        public ReactiveProperty<FoodData> Data { get; set; } = new();
+        public BoolReactiveProperty IsSelected { get; set; } = new();
+        public BoolReactiveProperty IsPlaced { get; set; } = new();
+        public BoolReactiveProperty IsSliding { get; set; } = new();
+        public BoolReactiveProperty MarkedForMatch { get; set; } = new();
         
-        public FoodMovement(Transform transform, AnimationCurve curve)
-        {
-            _transform = transform;
-            _ease = curve;
-        }
-        
-        public void FixedTick()
-        {
-            if (IsArrived() || _start == false)
-                return;
+        public Sequence Sequence { get; set; }
+        public Tween SlideTween { get; set; }
+    }
 
-            _counter += Time.deltaTime;
-            float evaluated = _ease.Evaluate(_counter / _duration);
-            Vector3 lerp = Vector3.Lerp(_startPosition, _targetPosition, evaluated);
-            _transform.position = lerp;
-        }
+    public class FoodPresenter
+    {
+        private readonly SignalBus _signalBus;
+        private readonly FoodModel _foodModel;
+        private readonly FoodView _foodView;
 
-        public void SetParameters(Vector3 target, float duration)
+        public FoodPresenter(SignalBus signalBus, FoodModel foodModel, FoodView foodView)
         {
-            _start = true;
-            _startPosition = _transform.position;
-            _counter = 0f;
-            _targetPosition = target;
-            _duration = duration;
+            _signalBus = signalBus;
+            _foodModel = foodModel;
+            _foodView = foodView;
         }
 
-        private bool IsArrived()
+        public void InitView()
         {
-            return Vector3.Distance(_transform.position, _targetPosition) <= 0.01f;
+            _foodView.gameObject.OnMouseUpAsButtonAsObservable().Subscribe(_ => 
+            {
+                OnClickedFood();
+            }).AddTo(_foodView.gameObject);
+        }
+
+        private void OnClickedFood()
+        {
+            if(_foodModel.IsSelected.Value) return;
+            
+            _signalBus.TryFire(new FoodClickedSignal{Food = _foodView});
         }
     }
+
+    public class FoodViewRename
+    {
+        
+    }
     
+    //Food installer actually
     public class FoodView : MonoBehaviour
     {
         [Inject] private readonly SignalBus _signalBus;
 
         [SerializeField] private FoodData data;
-        public FoodData Data => data;
-        //private FoodMovement _foodMovement;
-        
-        public bool IsSelected { get; set; }
-        public bool IsPlaced { get; set; }
-        public bool IsSliding { get; set; }
-        public bool MarkedForMatch { get; set; }
 
-        public Sequence Sequence { get; set; }
-        public Tween SlideTween { get; set; }
+        private FoodModel _model;
+        private FoodPresenter _presenter;
 
+        public FoodData Data => _model.Data.Value;
+        public bool IsSelected
+        {
+            get => _model.IsSelected.Value;
+            set => _model.IsSelected.Value = value;
+        }
+
+        public bool IsPlaced
+        {
+            get => _model.IsPlaced.Value;
+            set => _model.IsPlaced.Value = value;
+        }
+
+        public bool IsSliding
+        {
+            get => _model.IsSliding.Value;
+            set => _model.IsSliding.Value = value;
+        }
+
+        public bool MarkedForMatch
+        {
+            get => _model.MarkedForMatch.Value;
+            set => _model.MarkedForMatch.Value = value;
+        }
+
+        public Sequence Sequence
+        {
+            get => _model.Sequence;
+            set => _model.Sequence = value;
+        }
+
+        public Tween SlideTween
+        {
+            get => _model.SlideTween;
+            set => _model.SlideTween = value;
+        }
+
+        //todo food mvrp
         private void Awake() 
         {
-            gameObject.OnMouseUpAsButtonAsObservable().Subscribe(_ => 
+            // gameObject.OnMouseUpAsButtonAsObservable().Subscribe(_ => 
+            // {
+            //     OnClickedFood();
+            // }).AddTo(gameObject);
+
+            _model = new FoodModel
             {
-                OnClickedFood();
-            }).AddTo(gameObject);
+                Data =
+                {
+                    Value = data
+                },
+            };
+            _presenter = new FoodPresenter(_signalBus, _model, this);
+            _presenter.InitView();
         }
 
-        private void OnClickedFood()
-        {
-            if(IsSelected) return;
+        // private void OnClickedFood()
+        // {
+        //     if(IsSelected) return;
+        //
+        //     _signalBus.TryFire(new FoodClickedSignal{Food = this});
+        // }
 
-            _signalBus.TryFire(new FoodClickedSignal{Food = this});
-        }
-
+        //todo move in to view or presenter
         public void SetPhysics(bool active)
         {
             Rigidbody rb = GetComponent<Rigidbody>();
