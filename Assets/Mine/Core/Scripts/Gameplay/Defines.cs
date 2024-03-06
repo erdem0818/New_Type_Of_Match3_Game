@@ -1,4 +1,4 @@
-namespace Assets.Mine.Core.Scripts.Gameplay
+namespace Mine.Core.Scripts.Gameplay
 {
     public static class Defines
     {
@@ -7,7 +7,7 @@ namespace Assets.Mine.Core.Scripts.Gameplay
         public const string LevelSaveKey = "LevelSave";
 
         public const string PrefabFilter = "t:Prefab";
-        public const string SOFilter     = "t:ScriptableObject";
+        public const string SoFilter     = "t:ScriptableObject";
     }
 }
 

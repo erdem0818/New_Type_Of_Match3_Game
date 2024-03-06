@@ -45,7 +45,6 @@ namespace Mine.Core.Scripts.Framework.UI.Panel_Folder
                         
                         if (!_attributedMethods.ContainsKey(attType))
                         {
-                            //Debug.Log(attType.Name);
                             _attributedMethods.Add(attType, new List<KeyValuePair<Component, MethodInfo>>());
                         }
 
@@ -58,8 +57,7 @@ namespace Mine.Core.Scripts.Framework.UI.Panel_Folder
         private void InvokeAttMethods(Type attributeType)
         {
             //Info still out?
-            if (!_attributedMethods.TryGetValue(attributeType,
-                    out List<KeyValuePair<Component, MethodInfo>> methods)) return;
+            if (!_attributedMethods.TryGetValue(attributeType, out List<KeyValuePair<Component, MethodInfo>> methods)) return;
             foreach (var (comp, method) in methods)
             {
                 method.Invoke(comp, null);
@@ -67,11 +65,14 @@ namespace Mine.Core.Scripts.Framework.UI.Panel_Folder
         }
         #endregion
 
+        //todo rename, not appear disappear maybe pre show pre hide
+        #region Appear Methods
         protected virtual void OnPreAppear()
         {
             //Debug.Log("Pre Appear".ToBold());
             
-            extensions.ForEach(ex => ex.DoExtension());
+            //todo keep extension but disabled for now.
+            //extensions.ForEach(ex => ex.DoExtension());
             //onPreAppearEvent?.Invoke();
             InvokeAttMethods(typeof(PreAppearAttribute));
         }
@@ -105,6 +106,7 @@ namespace Mine.Core.Scripts.Framework.UI.Panel_Folder
             InvokeAttMethods(typeof(PostDisappearAttribute));
             Destroy(gameObject);
         }
+        #endregion
 
         public void Hide()
         {

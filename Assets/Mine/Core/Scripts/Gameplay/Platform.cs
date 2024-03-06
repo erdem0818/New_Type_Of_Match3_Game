@@ -1,20 +1,23 @@
-using Assets.Mine.Core.Scripts.Gameplay.FoodFolder;
-using Assets.Mine.Core.Scripts.Gameplay.Signals;
-using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Assets.Mine.Core.Scripts.Gameplay;
+using Assets.Mine.Core.Scripts.Gameplay.FoodFolder;
+using Assets.Mine.Core.Scripts.Gameplay.Signals;
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Mine.Core.Scripts.Framework.Extensions_Folder;
+using Mine.Core.Scripts.Gameplay.Food_Folder;
 using UnityEngine;
 using Zenject;
 
-namespace Assets.Mine.Core.Scripts.Gameplay
+namespace Mine.Core.Scripts.Gameplay
 {
     public class PlatformPart
     {
         public Transform Transform { get; set; }
         public bool IsOccupied { get; set; }
+        public bool IsLocked { get; set; }
         public FoodView CurrentFood{ get; set; }
 
         public Vector3 GetPlacePosition()
@@ -40,7 +43,6 @@ namespace Assets.Mine.Core.Scripts.Gameplay
 
         private readonly List<PlatformPart> _parts = new();
         public List<PlatformPart> Parts => _parts;
-        //public FoodView[] Foods { get; private set; }
 
         private int PlatformLength => _parts.Count;
 
@@ -62,8 +64,6 @@ namespace Assets.Mine.Core.Scripts.Gameplay
                     IsOccupied = false
                 });
             }
-
-            //Foods = new FoodView[PlatformLength];
         }
 
         public void Dispose()
@@ -142,7 +142,6 @@ namespace Assets.Mine.Core.Scripts.Gameplay
 
             _parts[idx].IsOccupied = occupied;
             _parts[idx].CurrentFood = food;
-            //Foods[idx] = food;
 
             Debug.Log($"Occupation: {occupied}".ToBold());
         }
@@ -179,15 +178,15 @@ namespace Assets.Mine.Core.Scripts.Gameplay
 
         private void MoveAllLeftSide()
         {
-            for (int i = 0; i < _parts.Count; i++)
+            foreach (var part in _parts)
             {
-                if (_parts[i].CurrentFood == null)
+                if (part.CurrentFood == null)
                     continue;
 
-                FoodView food = _parts[i].CurrentFood;
+                FoodView food = part.CurrentFood;
                 
-                _parts[i].IsOccupied = false;
-                _parts[i].CurrentFood = null;
+                part.IsOccupied = false;
+                part.CurrentFood = null;
                 
                 int empty = GetFirstEmptyIndex();
                 _parts[empty].IsOccupied = true;
@@ -202,9 +201,9 @@ namespace Assets.Mine.Core.Scripts.Gameplay
                 part.IsOccupied = false;
             }
 
-            for (var i = 0; i < _parts.Count; i++)
+            foreach (var part in _parts)
             {
-                var food = _parts[i].CurrentFood;
+                var food = part.CurrentFood;
                 if (food == null)
                     continue;
                 food.GetComponent<Rigidbody>().AddForce(Vector3.forward * 2f, ForceMode.Impulse);
@@ -213,7 +212,7 @@ namespace Assets.Mine.Core.Scripts.Gameplay
                 food.IsPlaced = false;
                 food.MarkedForMatch = false;
                 food.Sequence.Kill();
-                _parts[i].CurrentFood = null;
+                part.CurrentFood = null;
             }
         }
 

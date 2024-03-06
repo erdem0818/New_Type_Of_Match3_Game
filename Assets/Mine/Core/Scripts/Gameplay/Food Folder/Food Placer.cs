@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Assets.Mine.Core.Scripts.Gameplay.FoodFolder;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Mine.Core.Scripts.Framework.Extensions_Folder;
 using UnityEngine;
 using Zenject;
 
-namespace Assets.Mine.Core.Scripts.Gameplay.FoodFolder
+namespace Mine.Core.Scripts.Gameplay.Food_Folder
 {
     public struct FoodPlacingMovementStartSignal
     {
@@ -109,6 +110,7 @@ namespace Assets.Mine.Core.Scripts.Gameplay.FoodFolder
         {
             var toList = pairs.ToList();
             
+            //to debugHandler -> disable logs etc.
             Debug.Log("waiting for all foods placed".ToBold());
             
             var uts = Enumerable.Select(toList, pair=> UniTask.WaitUntil(() => pair.food.IsPlaced)).ToList();
@@ -116,6 +118,8 @@ namespace Assets.Mine.Core.Scripts.Gameplay.FoodFolder
             await UniTask.WhenAll(uts);
             
             Debug.Log("waiting for all foods placed finished".ToBold());
+            
+            //IMatchAnimationStrategy ?
             
             //Vector3 midPosition = toList[1].food.transform.position + Vector3.up * .5f;
             Vector3 midPosition = toList[0].food.transform.position;

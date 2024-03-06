@@ -6,6 +6,8 @@ using Assets.Mine.Core.Scripts.Gameplay.FoodFolder;
 using Assets.Mine.Core.Scripts.Gameplay.Database;
 using Assets.Mine.Core.Scripts.Gameplay.Pool;
 using Assets.Mine.Core.Scripts.Gameplay.Level;
+using Mine.Core.Scripts.Gameplay;
+using Mine.Core.Scripts.Gameplay.Food_Folder;
 
 namespace Assets.Mine.Core.Scripts.Injection
 {

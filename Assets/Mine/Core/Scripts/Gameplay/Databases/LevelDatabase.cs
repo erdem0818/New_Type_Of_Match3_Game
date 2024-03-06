@@ -1,5 +1,6 @@
 using Assets.Mine.Core.Scripts.Gameplay.Level;
 using Mine.Core.Scripts.Framework.Extensions_Folder;
+using Mine.Core.Scripts.Gameplay;
 using NaughtyAttributes;
 using UnityEditor;
 using UnityEngine;
@@ -16,7 +17,7 @@ namespace Assets.Mine.Core.Scripts.Gameplay.Database
         private void FillDB()
         {
             items.Clear();
-            var paths = PathUtility.GetPathsInPath(Defines.SOFilter, FoodPrefabPath);
+            var paths = PathUtility.GetPathsInPath(Defines.SoFilter, FoodPrefabPath);
             foreach (var path in paths)
             {
                 var dbObj = AssetDatabase.LoadAssetAtPath<LevelData>(path);

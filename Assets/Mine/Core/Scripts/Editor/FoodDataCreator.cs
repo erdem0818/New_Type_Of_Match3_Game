@@ -3,6 +3,7 @@ using System.Linq;
 using Assets.Mine.Core.Scripts.Gameplay;
 using Assets.Mine.Core.Scripts.Gameplay.FoodFolder;
 using Mine.Core.Scripts.Framework.Extensions_Folder;
+using Mine.Core.Scripts.Gameplay;
 using UnityEditor;
 using UnityEngine;
 using Zenject;
@@ -73,7 +74,7 @@ namespace Mine.Core.Scripts.Editor
         private void DisplayPrefabs()
         {
             List<string> paths = PathUtility.GetPathsInPath(Defines.PrefabFilter, Path);
-            List<string> dataPaths = PathUtility.GetPathsInPath(Defines.SOFilter, DataPath);
+            List<string> dataPaths = PathUtility.GetPathsInPath(Defines.SoFilter, DataPath);
 
             _scrollPosition = GUILayout.BeginScrollView(_scrollPosition, new GUIStyle() { });
 
@@ -145,7 +146,7 @@ namespace Mine.Core.Scripts.Editor
         private void LoadAllFoodData()
         {
             _foodDataList.Clear();
-            var foodDataPaths = PathUtility.GetPathsInPath(Defines.SOFilter, DataPath);
+            var foodDataPaths = PathUtility.GetPathsInPath(Defines.SoFilter, DataPath);
 
             foreach (var data in foodDataPaths.Select(AssetDatabase.LoadAssetAtPath<FoodData>).Where(data => data != null))
             {
@@ -192,7 +193,7 @@ namespace Mine.Core.Scripts.Editor
             if(GUILayout.Button($"Delete {food.name}"))
             {
                 EditorUtility.SetDirty(food);
-                var foodDataPaths = PathUtility.GetPathsInPath(Defines.SOFilter, DataPath);
+                var foodDataPaths = PathUtility.GetPathsInPath(Defines.SoFilter, DataPath);
                 foodDataPaths.AnyOut<string>(p => p.Contains(food.name), out string path);
                 AssetDatabase.DeleteAsset(path);
                 AssetDatabase.SaveAssets();

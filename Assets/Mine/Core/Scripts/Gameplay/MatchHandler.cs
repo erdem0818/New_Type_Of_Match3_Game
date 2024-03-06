@@ -1,13 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Assets.Mine.Core.Scripts.Gameplay;
 using Assets.Mine.Core.Scripts.Gameplay.FoodFolder;
-using Zenject;
-using UnityEngine;
 using Cysharp.Threading.Tasks;
 using Mine.Core.Scripts.Framework.Extensions_Folder;
+using Mine.Core.Scripts.Gameplay.Food_Folder;
+using UnityEngine;
+using Zenject;
 
-namespace Assets.Mine.Core.Scripts.Gameplay
+namespace Mine.Core.Scripts.Gameplay
 {
     public struct MatchAnimationStartSignal
     {
@@ -20,7 +22,7 @@ namespace Assets.Mine.Core.Scripts.Gameplay
         private readonly SignalBus _signalBus;
         private readonly Platform _platform;
 
-        private readonly int _requiredMatchCount = 3;
+        private const int RequiredMatchCount = 3;
 
         public MatchHandler(SignalBus signalBus, Platform platform)
         {
@@ -45,9 +47,6 @@ namespace Assets.Mine.Core.Scripts.Gameplay
 
         private async UniTask PlayRequestedMatchAnimation(IList<(int index, FoodView food)> pairs)
         {
-            //Info for debug
-            //await UniTask.Delay(2000);
-            
             var uts = Enumerable.Select(pairs, pair 
                 => UniTask.WaitUntil(() => pair.food.IsPlaced && pair.food.IsSliding == false)).ToList();
 
@@ -56,7 +55,6 @@ namespace Assets.Mine.Core.Scripts.Gameplay
             _signalBus.TryFire(new MatchAnimationStartSignal
             {
                 IndexFoodTuples = pairs.ToList(),
-                //MidPosition = midPosition
             });
         }
 
@@ -72,23 +70,9 @@ namespace Assets.Mine.Core.Scripts.Gameplay
             }
         }
 
-        /*private bool IsThereAnyMatch()
-        {
-            if (!IsThereAnyMatchCheck(out var matches)) return false;
-            
-            Debug.Log("MATCH".ToBold().ToColor(Color.blue));
-
-            _signalBus.TryFire(new MatchAnimationStartSignal()
-            {
-                IndexFoodTuples = matches,
-                MidPosition = matches[1].food.transform.position + Vector3.up * 0.5f
-            });
-            return true;
-        }*/
-
         public bool IsThereAnyMatchCheck(out List<(int index, FoodView food)> matches)
         {
-            int len = _platform.Parts.Count - _requiredMatchCount + 1;
+            int len = _platform.Parts.Count - RequiredMatchCount + 1;
             for(int i = 0; i < len; i++) 
             {
                 if (_platform.Parts[i].CurrentFood == null) continue;
@@ -102,7 +86,7 @@ namespace Assets.Mine.Core.Scripts.Gameplay
                     head
                 };
 
-                for (int j = 1; j < _requiredMatchCount; j++)
+                for (int j = 1; j < RequiredMatchCount; j++)
                 {
                     FoodView neighbor = _platform.Parts[i + j].CurrentFood;
                     looks.Add(neighbor);
@@ -114,14 +98,21 @@ namespace Assets.Mine.Core.Scripts.Gameplay
                 bool same = looks.All(fv => fv.Data.foodID == headID);
 
                 if (!same) continue;
-                List<(int index, FoodView food)> temp = new()
-                {
-                    //Info not hard code 3 -> required
-                    new ValueTuple<int, FoodView>(i, looks[0]),
-                    new ValueTuple<int, FoodView>(i + 1, looks[1]),
-                    new ValueTuple<int, FoodView>(i + 2, looks[2])
-                };
                 
+                // List<(int index, FoodView food)> temp = new()
+                // {
+                //     //Info not hard code 3 -> required
+                //     new ValueTuple<int, FoodView>(i, looks[0]),
+                //     new ValueTuple<int, FoodView>(i + 1, looks[1]),
+                //     new ValueTuple<int, FoodView>(i + 2, looks[2])
+                // };
+                List<(int Index, FoodView food)> temp = new();
+
+                for (int j = 0; j < RequiredMatchCount; j++) // 0 1 2
+                {
+                    temp.Add(new ValueTuple<int, FoodView>(i + j, looks[j]));
+                }
+
                 temp.ForEach(pr => pr.food.MarkedForMatch = true);
 
                 matches = temp;
@@ -133,4 +124,3 @@ namespace Assets.Mine.Core.Scripts.Gameplay
         }
     }
 }
-
