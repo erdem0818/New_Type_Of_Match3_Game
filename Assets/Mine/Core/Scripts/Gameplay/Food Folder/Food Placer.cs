@@ -5,26 +5,12 @@ using Assets.Mine.Core.Scripts.Gameplay.FoodFolder;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Mine.Core.Scripts.Framework.Extensions_Folder;
+using Mine.Core.Scripts.Gameplay.Signals;
 using UnityEngine;
 using Zenject;
 
 namespace Mine.Core.Scripts.Gameplay.Food_Folder
 {
-    public struct FoodPlacingMovementStartSignal
-    {
-        public int PlacedIndex { get; set; }
-        public FoodView Food { get; set; }
-        public Vector3 PlacePosition { get; set; }
-    }
-
-    public struct FoodPlacingMovementFinishedSignal
-    {}
-
-    public struct MatchAnimationFinishedSignal
-    {
-        public List<(int index, FoodView food)> IndexFoodTuples {get; set;}
-    }
-
     public class FoodPlacer : IInitializable, IDisposable
     {
         private readonly SignalBus _signalBus;

@@ -1,5 +1,5 @@
-using Assets.Mine.Core.Scripts.Gameplay.Signals;
 using DG.Tweening;
+using Mine.Core.Scripts.Gameplay.Signals;
 using UniRx.Triggers;
 using UniRx;
 using UnityEngine;

@@ -43,5 +43,12 @@ namespace Mine.Core.Scripts.Gameplay.UI
         {
             Debug.Log("Post Disappear");
         }
+        
+        [PreAppear]
+        [PostDisappear]
+        public void MultipleTest()
+        {
+            Debug.Log("Multiple Test".ToBold());
+        }
     }
 }

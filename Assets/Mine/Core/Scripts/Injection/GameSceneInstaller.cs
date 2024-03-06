@@ -1,5 +1,4 @@
 using Assets.Mine.Core.Scripts.Gameplay;
-using Assets.Mine.Core.Scripts.Gameplay.Signals;
 using Zenject;
 using UnityEngine;
 using Assets.Mine.Core.Scripts.Gameplay.FoodFolder;
@@ -8,6 +7,7 @@ using Assets.Mine.Core.Scripts.Gameplay.Pool;
 using Assets.Mine.Core.Scripts.Gameplay.Level;
 using Mine.Core.Scripts.Gameplay;
 using Mine.Core.Scripts.Gameplay.Food_Folder;
+using Mine.Core.Scripts.Gameplay.Signals;
 
 namespace Assets.Mine.Core.Scripts.Injection
 {

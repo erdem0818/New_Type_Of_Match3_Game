@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Assets.Mine.Core.Scripts.Gameplay;
 using Assets.Mine.Core.Scripts.Gameplay.FoodFolder;
-using Assets.Mine.Core.Scripts.Gameplay.Signals;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Mine.Core.Scripts.Framework.Extensions_Folder;
 using Mine.Core.Scripts.Gameplay.Food_Folder;
+using Mine.Core.Scripts.Gameplay.Signals;
 using UnityEngine;
 using Zenject;
 

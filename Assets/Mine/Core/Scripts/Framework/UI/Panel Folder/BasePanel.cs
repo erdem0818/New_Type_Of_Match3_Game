@@ -43,6 +43,7 @@ namespace Mine.Core.Scripts.Framework.UI.Panel_Folder
                     {
                         if (!Attribute.IsDefined(methodInfo, attType)) continue;
                         
+                        //Info adding new dictionary key pointer to list for an attribute type
                         if (!_attributedMethods.ContainsKey(attType))
                         {
                             _attributedMethods.Add(attType, new List<KeyValuePair<Component, MethodInfo>>());

@@ -1,22 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Assets.Mine.Core.Scripts.Gameplay;
 using Assets.Mine.Core.Scripts.Gameplay.FoodFolder;
 using Cysharp.Threading.Tasks;
 using Mine.Core.Scripts.Framework.Extensions_Folder;
-using Mine.Core.Scripts.Gameplay.Food_Folder;
+using Mine.Core.Scripts.Gameplay.Signals;
 using UnityEngine;
 using Zenject;
 
 namespace Mine.Core.Scripts.Gameplay
 {
-    public struct MatchAnimationStartSignal
-    {
-        public List<(int index, FoodView food)> IndexFoodTuples {get; set;}
-        //public Vector3 MidPosition { get; set;}
-    }
-
     public class MatchHandler : IInitializable, IDisposable
     {
         private readonly SignalBus _signalBus;
@@ -99,13 +92,6 @@ namespace Mine.Core.Scripts.Gameplay
 
                 if (!same) continue;
                 
-                // List<(int index, FoodView food)> temp = new()
-                // {
-                //     //Info not hard code 3 -> required
-                //     new ValueTuple<int, FoodView>(i, looks[0]),
-                //     new ValueTuple<int, FoodView>(i + 1, looks[1]),
-                //     new ValueTuple<int, FoodView>(i + 2, looks[2])
-                // };
                 List<(int Index, FoodView food)> temp = new();
 
                 for (int j = 0; j < RequiredMatchCount; j++) // 0 1 2
