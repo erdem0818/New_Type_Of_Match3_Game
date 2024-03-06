@@ -2,6 +2,7 @@ using System.Text;
 using Assets.Mine.Core.Scripts.Gameplay;
 using Mine.Core.Scripts.Framework.Extensions_Folder;
 using Mine.Core.Scripts.Framework.UI.Panel_Folder;
+using Mine.Core.Scripts.Framework.UI.Panel_Folder.Popup_Folder;
 using UniRx;
 using UnityEngine;
 using Zenject;
@@ -30,7 +31,7 @@ namespace Mine.Core.Scripts.Gameplay
                 
                 if (Input.GetKeyDown(KeyCode.P))
                 {
-                    var panel = FindFirstObjectByType<DefaultPanel>(FindObjectsInactive.Include);
+                    var panel = FindFirstObjectByType<DefaultPopup>(FindObjectsInactive.Include);
                     panel.gameObject.SetActive(true);
                     panel.Show();
                 }

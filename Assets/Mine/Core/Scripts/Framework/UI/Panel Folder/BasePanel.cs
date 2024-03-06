@@ -1,53 +1,97 @@
-﻿using DG.Tweening;
-using Mine.Core.Scripts.Framework.Extensions_Folder;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
+using Mine.Core.Scripts.Framework.UI.Panel_Folder.Attribute_Folder;
 using NaughtyAttributes;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.UI;
 
 namespace Mine.Core.Scripts.Framework.UI.Panel_Folder
 {
+    public abstract class PanelExtension : MonoBehaviour
+    {
+        public abstract void DoExtension();
+    }
+    
     public abstract class BasePanel : MonoBehaviour
     {
-        [SerializeField] private RectTransform rectTransform;
-        [SerializeField] private Image backgroundImage;
-        
-        [Header("Animation Settings")]
-        [HorizontalLine(2, EColor.Green)]
-        [SerializeField] private float appearDuration;
-        [SerializeField] private float disappearDuration;
+        [Header("Extensions")]
+        [HorizontalLine(2f, EColor.Black)]
+        [SerializeField] private List<PanelExtension> extensions;
 
-        [Header("Events")] 
-        [HorizontalLine(2f, EColor.Orange)] 
-        [SerializeField] private UnityEvent onPreAppearEvent; 
-        [SerializeField] private UnityEvent onPostAppearEvent; 
-        [SerializeField] private UnityEvent onPreDisappearEvent; 
-        [SerializeField] private UnityEvent onPostDisappearEvent; 
+        private readonly Dictionary<Type, List<KeyValuePair<Component, MethodInfo>>> _attributedMethods = new();
+
+        protected virtual void Awake()
+        {
+            FindCallbackAttributes();
+        }
+
+        #region Reflection
+        private void FindCallbackAttributes()
+        {
+            Component[] allComponents = GetComponentsInChildren<Component>();
+            Type[] lookFor = {typeof(PreAppearAttribute), typeof(PostAppearAttribute), typeof(PreDisappearAttribute), typeof(PostDisappearAttribute)};
+            foreach (var component in allComponents)
+            {
+                if(component == null || component == this) continue;
+
+                const BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+                MethodInfo[] methods = component.GetType().GetMethods(flags);
+
+                foreach (MethodInfo methodInfo in methods)
+                {
+                    foreach (Type attType in lookFor)
+                    {
+                        if (!Attribute.IsDefined(methodInfo, attType)) continue;
+                        
+                        if (!_attributedMethods.ContainsKey(attType))
+                        {
+                            //Debug.Log(attType.Name);
+                            _attributedMethods.Add(attType, new List<KeyValuePair<Component, MethodInfo>>());
+                        }
+
+                        _attributedMethods[attType].Add(new KeyValuePair<Component, MethodInfo>(component, methodInfo));
+                    }
+                }
+            }
+        }
+
+        private void InvokeAttMethods(Type attributeType)
+        {
+            //Info still out?
+            if (!_attributedMethods.TryGetValue(attributeType,
+                    out List<KeyValuePair<Component, MethodInfo>> methods)) return;
+            foreach (var (comp, method) in methods)
+            {
+                method.Invoke(comp, null);
+            }
+        }
+        #endregion
 
         protected virtual void OnPreAppear()
         {
-            Debug.Log("Pre Appear".ToBold());
-            float target = backgroundImage.color.a;
-            backgroundImage.color = backgroundImage.color.SetAlpha(0.0f);
-            backgroundImage.DOFade(target, appearDuration);
+            //Debug.Log("Pre Appear".ToBold());
             
-            onPreAppearEvent?.Invoke();
+            extensions.ForEach(ex => ex.DoExtension());
+            //onPreAppearEvent?.Invoke();
+            InvokeAttMethods(typeof(PreAppearAttribute));
         }
 
         public void Appear()
         {
-            Debug.Log("Appear".ToBold());
+            //Debug.Log("Appear".ToBold());
         }
 
         protected virtual void OnPostAppear()
         {
-            Debug.Log("Post Appear".ToBold());
-            onPostAppearEvent?.Invoke();
+            //Debug.Log("Post Appear".ToBold());
+            //onPostAppearEvent?.Invoke();
+            InvokeAttMethods(typeof(PostAppearAttribute));
         }
 
         protected virtual void OnPreDisappear()
         {
-            onPreDisappearEvent?.Invoke();
+            //onPreDisappearEvent?.Invoke();
+            InvokeAttMethods(typeof(PreDisappearAttribute));
         }
 
         public void Disappear()
@@ -57,7 +101,9 @@ namespace Mine.Core.Scripts.Framework.UI.Panel_Folder
 
         protected virtual void OnPostDisappear()
         {
-            onPostDisappearEvent?.Invoke();
+            //onPostDisappearEvent?.Invoke();
+            InvokeAttMethods(typeof(PostDisappearAttribute));
+            Destroy(gameObject);
         }
 
         public void Hide()

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
@@ -10,10 +11,11 @@ namespace Mine.Core.Scripts.Framework.UI.Button_Folder
     public abstract class Button_EA : MonoBehaviour
     {
         private Button _button;
-        private readonly List<UnityAction> _callbacks = new();
         private Tween _tween;
 
-        private void Awake() 
+        [SerializeField] private UnityEvent onClick;
+        
+        public virtual void Awake() 
         {
             _button = GetComponent<Button>();    
             _button.onClick.AddListener(OnClickCallback);
@@ -23,24 +25,28 @@ namespace Mine.Core.Scripts.Framework.UI.Button_Folder
         {
             DoMovement();
             OnClick();
-            _callbacks.ForEach(ac => ac?.Invoke());
-        }
-
-        public void AddOnClickCallback(UnityAction action)
-        {
-            if(_callbacks.Contains(action) == false)
-            {
-                _callbacks.Add(action);
-            }
         }
 
         private void DoMovement()
         {
             _tween?.Kill(true);
-            _tween = transform.DOPunchScale(new Vector3(0.35f, 0.35f, 1), 0.2f, 3, 0.2f).SetAutoKill(true);
+            _tween = transform.DOPunchScale(
+                    new Vector3(0.25f, 0.25f, 1),
+                    0.1f,
+                    2,
+                    0.1f)
+                .SetAutoKill(true);
         }
 
-        public virtual void OnClick(){}
+        protected virtual void OnClick()
+        {
+            onClick?.Invoke();
+        }
+
+        private void OnDestroy()
+        {
+            _tween?.Kill(false);
+        }
     }
 }
 

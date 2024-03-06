@@ -55,6 +55,29 @@ namespace Mine.Core.Scripts.Framework.Extensions_Folder
         {
             return new Vector2(vector2.x, y);
         }
+
+        public static Vector3 MultiplyByPercent(this Vector3 vector3, float percent)
+        {
+            return new Vector3(vector3.x.MultiplyByPercent(percent),
+                vector3.y.MultiplyByPercent(percent),
+                vector3.z.MultiplyByPercent(percent));
+        }
+
+        public static float MultiplyByPercent(this float f, float percent)
+        {
+            percent = Mathf.Clamp(percent, -100, 100);
+            switch (percent)
+            {
+                case < 0:
+                    f += (percent * f) / 100f;
+                    return f;
+                case > 0:
+                    f -= (percent * f) / 100f;
+                    return f;
+                default:
+                    return f;
+            }
+        }
     }
 }
 

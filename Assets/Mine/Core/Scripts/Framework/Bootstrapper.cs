@@ -2,11 +2,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using NaughtyAttributes;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Assets.Mine.Core.Scripts.Framework
+namespace Mine.Core.Scripts.Framework
 {
     public class Bootstrapper : MonoBehaviour
     {
@@ -17,7 +16,7 @@ namespace Assets.Mine.Core.Scripts.Framework
         //[Scene]
         [SerializeField] private List<string> sceneNames;
 
-        private async void Awake() 
+        private async void Awake()
         {
             if(ValidateAllScenes() == false)
             {
@@ -25,21 +24,20 @@ namespace Assets.Mine.Core.Scripts.Framework
                 return;
             }
 
-            for(int i = 0; i < sceneNames.Count; i++)
+            foreach (var currentScenePath in sceneNames.Select(t => PathPrefix + t))
             {
-                string currentScenePath = PathPrefix + sceneNames[i];
                 await SceneManager.LoadSceneAsync(currentScenePath, LoadSceneMode.Additive);
             }
         }
 
         private bool ValidateAllScenes()
         {
-            return sceneNames.All(sm => ValidateSceneExistence(sm));
+            return sceneNames.All(ValidateSceneExistence);
         }
 
         private bool ValidateSceneExistence(string sceneName)
         {
-            return SceneUtility.GetBuildIndexByScenePath(PathPrefix + sceneName) == -1 ? false : true;
+            return SceneUtility.GetBuildIndexByScenePath(PathPrefix + sceneName) != -1;
         }
     }
 }
