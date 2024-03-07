@@ -134,7 +134,7 @@ namespace Mine.Core.Scripts.Editor
                 if (anyOut)
                 {
                     FoodData data = AssetDatabase.LoadAssetAtPath<FoodData>(outPath);
-                    DisplayPrefab((obj as GameObject)?.GetComponent<FoodView>());
+                    DisplayPrefab((obj as GameObject)?.GetComponent<Food>());
                     DisplayFoodData(data);
                 }
 
@@ -204,7 +204,7 @@ namespace Mine.Core.Scripts.Editor
             EditorGUILayout.EndVertical();
         }
 
-        private void DisplayPrefab(FoodView prefab)
+        private void DisplayPrefab(Food prefab)
         {
             SerializedObject serializedObject = new(prefab);
             SerializedProperty dataProp = serializedObject.FindProperty("data");

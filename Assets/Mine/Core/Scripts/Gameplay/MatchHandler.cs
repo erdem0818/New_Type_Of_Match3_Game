@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Assets.Mine.Core.Scripts.Gameplay.FoodFolder;
 using Cysharp.Threading.Tasks;
 using Mine.Core.Scripts.Framework.Extensions_Folder;
 using Mine.Core.Scripts.Gameplay.Food_Folder;
@@ -34,13 +33,16 @@ namespace Mine.Core.Scripts.Gameplay
             _signalBus.TryUnsubscribe<FoodPlacingMovementFinishedSignal>(OnFoodPlacingMovementFinished);
         }
 
-        public void RequestMatch(IEnumerable<(int index, FoodView food)> pairs)
+        public void RequestMatch(IEnumerable<(int index, Food food)> pairs)
         {
             PlayRequestedMatchAnimation(pairs.ToList()).Forget();
         }
 
-        private async UniTask PlayRequestedMatchAnimation(IList<(int index, FoodView food)> pairs)
+        private async UniTask PlayRequestedMatchAnimation(IList<(int index, Food food)> pairs)
         {
+            if (pairs.Count == 0) 
+                throw new ArgumentException("Value cannot be an empty collection.", nameof(pairs));
+            
             var uts = Enumerable.Select(pairs, pair 
                 => UniTask.WaitUntil(() => pair.food.IsPlaced && pair.food.IsSliding == false)).ToList();
 
@@ -64,25 +66,26 @@ namespace Mine.Core.Scripts.Gameplay
             }
         }
 
-        public bool IsThereAnyMatchCheck(out List<(int index, FoodView food)> matches)
+        public bool IsThereAnyMatchCheck(out List<(int index, Food food)> matches)
         {
+            //Info:: to prevent throw out of index exception.
             int len = _platform.Parts.Count - RequiredMatchCount + 1;
             for(int i = 0; i < len; i++) 
             {
                 if (_platform.Parts[i].CurrentFood == null) continue;
                 if (_platform.Parts[i].CurrentFood.MarkedForMatch) continue;
 
-                FoodView head = _platform.Parts[i].CurrentFood;
+                Food head = _platform.Parts[i].CurrentFood;
                 int headID = head.Data.foodID;
 
-                List<FoodView> looks = new()
+                List<Food> looks = new()
                 {
                     head
                 };
 
                 for (int j = 1; j < RequiredMatchCount; j++)
                 {
-                    FoodView neighbor = _platform.Parts[i + j].CurrentFood;
+                    Food neighbor = _platform.Parts[i + j].CurrentFood;
                     looks.Add(neighbor);
                 }
 
@@ -93,13 +96,11 @@ namespace Mine.Core.Scripts.Gameplay
 
                 if (!same) continue;
                 
-                List<(int Index, FoodView food)> temp = new();
+                List<(int Index, Food food)> temp = new();
 
-                for (int j = 0; j < RequiredMatchCount; j++) // 0 1 2
-                {
-                    temp.Add(new ValueTuple<int, FoodView>(i + j, looks[j]));
-                }
-
+                for (int j = 0; j < RequiredMatchCount; j++)
+                    temp.Add(new ValueTuple<int, Food>(i + j, looks[j]));
+                
                 temp.ForEach(pr => pr.food.MarkedForMatch = true);
 
                 matches = temp;

@@ -1,40 +1,40 @@
-using Assets.Mine.Core.Scripts.Gameplay.Database;
-using Assets.Mine.Core.Scripts.Gameplay.Pool;
 using Assets.Mine.Core.Scripts.Utility;
-using Mine.Core.Scripts.Gameplay;
+using Mine.Core.Scripts.Gameplay.Databases;
+using Mine.Core.Scripts.Gameplay.Pool;
 using UnityEngine;
 using Zenject;
 
-namespace Assets.Mine.Core.Scripts.Gameplay.Level
+namespace Mine.Core.Scripts.Gameplay.Level_Folder
 {
     [System.Serializable]
     public struct LevelArgs
     {
         public int LastPlayedLevel { get; set; }
-
-        public static LevelArgs Empty = new LevelArgs { LastPlayedLevel = 0 };
+        public static LevelArgs Empty = new() { LastPlayedLevel = 0 };
     }
 
     public class LevelHandler : IInitializable
     {
+        private readonly SignalBus _signalBus;
         private readonly LevelDatabase _database;
         private readonly FoodCreator _creator;
 
-        public LevelHandler(LevelDatabase dataBase, FoodCreator creator)
+        public LevelHandler(SignalBus signalBus, LevelDatabase database, FoodCreator creator)
         {
-            _database = dataBase;
+            _signalBus = signalBus;
+            _database = database;
             _creator = creator;
         }
 
         public void Initialize()
         {
-            CreateFoods();   
+            CreateFoods();
         }
 
         private void CreateFoods()
         {
             //todo get from save
-            var save = SaveAPI.GetOrCreateData<LevelArgs>(Defines.LevelSaveKey, LevelArgs.Empty);
+            var save = SaveAPI.GetOrCreateData(Defines.LevelSaveKey, LevelArgs.Empty);
             LevelData data = _database.GetDBItem(save.LastPlayedLevel);
             if (data == null) 
             {
@@ -45,9 +45,7 @@ namespace Assets.Mine.Core.Scripts.Gameplay.Level
             foreach(LevelDataPair pair in data.levelDataPairs)
             {
                 for (int i = 0; i < pair.count; i++)
-                {
                     _creator.Create(pair.food.foodID);
-                }
             }
         }
     }

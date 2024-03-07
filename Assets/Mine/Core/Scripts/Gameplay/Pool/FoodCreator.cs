@@ -1,11 +1,10 @@
-using Assets.Mine.Core.Scripts.Gameplay.Database;
-using Assets.Mine.Core.Scripts.Gameplay.FoodFolder;
 using System.Linq;
+using Assets.Mine.Core.Scripts.Gameplay.Database;
 using Mine.Core.Scripts.Gameplay.Food_Folder;
 using UnityEngine;
 using Zenject;
 
-namespace Assets.Mine.Core.Scripts.Gameplay.Pool
+namespace Mine.Core.Scripts.Gameplay.Pool
 {
     public class FoodCreator
     {
@@ -20,7 +19,7 @@ namespace Assets.Mine.Core.Scripts.Gameplay.Pool
             _parent = parent;
         }
 
-        public FoodView Create(int id)
+        public Food Create(int id)
         {
             GameObject prefab = _foodDatabase.First(fd => fd.foodID == id).foodPrefab;
 
@@ -28,7 +27,7 @@ namespace Assets.Mine.Core.Scripts.Gameplay.Pool
             {
                 ParentTransform = _parent,
                 Position = (Random.insideUnitSphere * 2.5f) + (Vector3.up * Random.Range(3,5))
-            }).GetComponent<FoodView>();
+            }).GetComponent<Food>();
         }
     }
 }

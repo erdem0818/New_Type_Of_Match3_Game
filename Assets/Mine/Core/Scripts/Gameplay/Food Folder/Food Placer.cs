@@ -36,7 +36,7 @@ namespace Mine.Core.Scripts.Gameplay.Food_Folder
             PlaceFoodOnPlatformAsync(signal.Food, signal.PlacePosition).Forget();
         }
         
-        private async UniTask PlaceFoodOnPlatformAsync(FoodView food, Vector3 placePosition)
+        private async UniTask PlaceFoodOnPlatformAsync(Food food, Vector3 placePosition)
         {
             Sequence seq = DOTween.Sequence();
             food.Sequence = seq
@@ -53,7 +53,7 @@ namespace Mine.Core.Scripts.Gameplay.Food_Folder
             _signalBus.TryFire<FoodPlacingMovementFinishedSignal>();
         }
 
-        public async UniTask SlideTheFood(FoodView food, Vector3 placePosition)
+        public async UniTask SlideTheFood(Food food, Vector3 placePosition)
         {
             food.Sequence?.Kill();
             food.SlideTween?.Kill();
@@ -91,7 +91,7 @@ namespace Mine.Core.Scripts.Gameplay.Food_Folder
             }
         }
 
-        private async UniTask PlayMatchAnimationAsync(IEnumerable<(int index, FoodView food)> pairs)
+        private static async UniTask PlayMatchAnimationAsync(IEnumerable<(int index, Food food)> pairs)
         {
             var toList = pairs.ToList();
             

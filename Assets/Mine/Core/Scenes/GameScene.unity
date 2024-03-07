@@ -623,6 +623,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 668a45a93e4cb6e4da0c377c10f92055, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  winPanel: {fileID: 0}
 --- !u!4 &220370048
 Transform:
   m_ObjectHideFlags: 0
@@ -1477,7 +1478,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2ea78c7e068c2444837aedaeb1ee4d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _foodParent: {fileID: 269958655}
+  foodParent: {fileID: 269958655}
   foodDatabase: {fileID: 11400000, guid: 916a6e3c6c1304f40a8766c22caf67c0, type: 2}
   levelDatabase: {fileID: 11400000, guid: 759a81057e1195d49be1095175d2e289, type: 2}
   platform: {fileID: 1078877317}

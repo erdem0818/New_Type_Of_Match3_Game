@@ -1,8 +1,9 @@
 using Assets.Mine.Core.Scripts.Gameplay.Database;
-using Assets.Mine.Core.Scripts.Gameplay.Level;
-using Assets.Mine.Core.Scripts.Gameplay.Pool;
 using Mine.Core.Scripts.Gameplay;
+using Mine.Core.Scripts.Gameplay.Databases;
 using Mine.Core.Scripts.Gameplay.Food_Folder;
+using Mine.Core.Scripts.Gameplay.Level_Folder;
+using Mine.Core.Scripts.Gameplay.Pool;
 using Mine.Core.Scripts.Gameplay.Signals;
 using UnityEngine;
 using Zenject;
@@ -11,14 +12,14 @@ namespace Mine.Core.Scripts.Injection
 {
     public class GameSceneInstaller : MonoInstaller
     {
-        [SerializeField] private Transform _foodParent;
+        [SerializeField] private Transform foodParent;
         [SerializeField] private FoodDatabase foodDatabase;
         [SerializeField] private LevelDatabase levelDatabase;
         [SerializeField] private Transform platform;
 
         public override void InstallBindings()
         {
-            Container.BindInstance(_foodParent);
+            Container.BindInstance(foodParent);
             Container.BindInstance(foodDatabase);
             Container.BindInstance(levelDatabase);
 

@@ -16,7 +16,7 @@ namespace Mine.Core.Scripts.Gameplay
         public Transform Transform { get; set; }
         public bool IsOccupied { get; set; }
         public bool IsLocked { get; set; }
-        public FoodView CurrentFood{ get; set; }
+        public Food CurrentFood{ get; set; }
 
         public Vector3 GetPlacePosition()
         {
@@ -29,14 +29,14 @@ namespace Mine.Core.Scripts.Gameplay
         private readonly SignalBus _signalBus;
         private readonly Transform _transform;
         private readonly FoodPlacer _foodPlacer;
-        
-        [Inject] private readonly MatchHandler _matchHandler;
+        private readonly MatchHandler _matchHandler;
 
-        public Platform(SignalBus signalBus, Transform transform, FoodPlacer foodPlacer)
+        public Platform(SignalBus signalBus, Transform transform, FoodPlacer foodPlacer, MatchHandler matchHandler)
         {
             _signalBus = signalBus;
             _transform = transform;
             _foodPlacer = foodPlacer;
+            _matchHandler = matchHandler;
         }
 
         public List<PlatformPart> Parts { get; } = new();
@@ -90,7 +90,7 @@ namespace Mine.Core.Scripts.Gameplay
                 PlacePosition = GetPartPosition(placeIndex)
             });
             
-            bool b = _matchHandler.IsThereAnyMatchCheck(out var matches); //_matchHandler.IsThereAnyMatch();
+            bool b = _matchHandler.IsThereAnyMatchCheck(out var matches);
              Debug.Log(b ?
                  "There is Match"
                      .ToBold()
@@ -100,15 +100,13 @@ namespace Mine.Core.Scripts.Gameplay
                      .ToColor(new Color(.1f, .1f, .1f)));
 
              if (!b) return;
-             //SetOccupationStatusForMatchElements(matches);
-             //MoveAllLeftSide();
-             //todo maybe crate another MatchDetected Signal and sub to it
+             
              _matchHandler.RequestMatch(matches);
         }
 
-        private void SetOccupationStatusForMatchElements(IEnumerable<(int index, FoodView food)> pairs)
+        private void SetOccupationStatusForMatchElements(IEnumerable<(int index, Food food)> pairs)
         {
-            foreach ((int index, FoodView food) pair in pairs)
+            foreach ((int index, Food food) pair in pairs)
             {
                 //fix this line ??
                 int correctIndex = Parts.FindIndex(part => ReferenceEquals(part.CurrentFood, pair.food));
@@ -124,7 +122,7 @@ namespace Mine.Core.Scripts.Gameplay
             ReorderAllMovement();
         }
 
-        private void SetOccupationStatus(int idx, FoodView food, bool occupied)
+        private void SetOccupationStatus(int idx, Food food, bool occupied)
         {
             if (occupied && Parts[idx].IsOccupied)
             {
@@ -146,7 +144,7 @@ namespace Mine.Core.Scripts.Gameplay
         {
             for (int i = 0; i < Parts.Count; i++)
             {
-                FoodView food = Parts[i].CurrentFood;
+                Food food = Parts[i].CurrentFood;
                 if (food == null)
                     continue;
 
@@ -166,7 +164,7 @@ namespace Mine.Core.Scripts.Gameplay
                 if (Parts[i].CurrentFood == null)
                     continue;
 
-                FoodView food = Parts[i].CurrentFood;
+                Food food = Parts[i].CurrentFood;
                 Parts[i + 1].IsOccupied = true;
                 Parts[i + 1].CurrentFood = food;
             }
@@ -179,7 +177,7 @@ namespace Mine.Core.Scripts.Gameplay
                 if (part.CurrentFood == null)
                     continue;
 
-                FoodView food = part.CurrentFood;
+                Food food = part.CurrentFood;
                 
                 part.IsOccupied = false;
                 part.CurrentFood = null;
@@ -229,7 +227,7 @@ namespace Mine.Core.Scripts.Gameplay
             int idx = 0;
             for (int i = 0; i < Parts.Count; i++)
             {
-                FoodView temp = Parts[i].CurrentFood;
+                Food temp = Parts[i].CurrentFood;
                 if (temp == null || temp.Data.foodID != foodId)
                     continue;
 

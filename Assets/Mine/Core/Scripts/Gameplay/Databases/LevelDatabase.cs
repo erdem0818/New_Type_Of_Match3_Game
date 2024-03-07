@@ -1,11 +1,12 @@
-using Assets.Mine.Core.Scripts.Gameplay.Level;
+using System.Linq;
+using Assets.Mine.Core.Scripts.Gameplay.Database;
 using Mine.Core.Scripts.Framework.Extensions_Folder;
-using Mine.Core.Scripts.Gameplay;
+using Mine.Core.Scripts.Gameplay.Level_Folder;
 using NaughtyAttributes;
 using UnityEditor;
 using UnityEngine;
 
-namespace Assets.Mine.Core.Scripts.Gameplay.Database
+namespace Mine.Core.Scripts.Gameplay.Databases
 {
     [CreateAssetMenu(menuName = "Data/Level Database", fileName = "Level Database")]
     public class LevelDatabase : Database<LevelData>
@@ -18,11 +19,18 @@ namespace Assets.Mine.Core.Scripts.Gameplay.Database
         {
             items.Clear();
             var paths = PathUtility.GetPathsInPath(Defines.SoFilter, FoodPrefabPath);
-            foreach (var path in paths)
+            foreach (var dbObj in paths
+                         .Select(AssetDatabase.LoadAssetAtPath<LevelData>)
+                         .Where(dbObj => dbObj != null))
             {
-                var dbObj = AssetDatabase.LoadAssetAtPath<LevelData>(path);
-                if (dbObj != null) items.Add(dbObj);
+                items.Add(dbObj);
             }
+            
+            // foreach (var path in paths)
+            // {
+            //     var dbObj = AssetDatabase.LoadAssetAtPath<LevelData>(path);
+            //     if (dbObj != null) items.Add(dbObj);
+            // }
         }
 #endif
     }

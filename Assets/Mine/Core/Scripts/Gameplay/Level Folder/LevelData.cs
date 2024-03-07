@@ -3,7 +3,7 @@ using Assets.Mine.Core.Scripts.Gameplay.FoodFolder;
 using NaughtyAttributes;
 using UnityEngine;
 
-namespace Assets.Mine.Core.Scripts.Gameplay.Level
+namespace Mine.Core.Scripts.Gameplay.Level_Folder
 {
     [System.Serializable]
     public struct LevelDataPair
@@ -19,6 +19,9 @@ namespace Assets.Mine.Core.Scripts.Gameplay.Level
         [Header("Level Start Foods")]
         [HorizontalLine(2, EColor.Yellow)]
         public List<LevelDataPair> levelDataPairs;
+        [Header("Quest")] 
+        [HorizontalLine(2, EColor.Green)]
+        public QuestData questData;
     }
 }
 
