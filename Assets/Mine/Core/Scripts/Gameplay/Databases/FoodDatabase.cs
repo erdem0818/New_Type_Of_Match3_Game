@@ -1,11 +1,11 @@
+using System.Linq;
 using Assets.Mine.Core.Scripts.Gameplay.FoodFolder;
 using Mine.Core.Scripts.Framework.Extensions_Folder;
-using Mine.Core.Scripts.Gameplay;
 using NaughtyAttributes;
 using UnityEditor;
 using UnityEngine;
 
-namespace Assets.Mine.Core.Scripts.Gameplay.Database
+namespace Mine.Core.Scripts.Gameplay.Databases
 {
     [CreateAssetMenu(menuName = "Data/Food Database", fileName = "Food Database")]
     public class FoodDatabase : Database<FoodData>
@@ -18,12 +18,27 @@ namespace Assets.Mine.Core.Scripts.Gameplay.Database
         {
             items.Clear();
             var paths = PathUtility.GetPathsInPath(Defines.SoFilter, FoodPrefabPath);
-            foreach ( var path in paths ) 
+            // items = paths
+            //     .Select(AssetDatabase.LoadAssetAtPath<FoodData>)
+            //     .Where(dbObj => dbObj != null)
+            //     .ToList();
+
+            //items = AssetDatabase.LoadAllAssetsAtPath(FoodPrefabPath).ToListAsConvert<Object, FoodData>();
+            foreach (var dbObj in paths
+                         .Select(AssetDatabase.LoadAssetAtPath<FoodData>)
+                         .Where(dbObj => dbObj != null))
             {
-                var dbObj = AssetDatabase.LoadAssetAtPath<FoodData>(path);
-                if (dbObj != null) items.Add(dbObj);
+                items.Add(dbObj);
             }
+
+            // foreach ( var path in paths ) 
+            // {
+            //     var dbObj = AssetDatabase.LoadAssetAtPath<FoodData>(path);
+            //     if (dbObj != null) items.Add(dbObj);
+            // }
         }
+        
+        //public static List<T> LoadAssetsAtPath() where T : UnityEngine
 #endif
     }
 }

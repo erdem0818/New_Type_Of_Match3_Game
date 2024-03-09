@@ -1,5 +1,5 @@
 using System.Linq;
-using Assets.Mine.Core.Scripts.Gameplay.Database;
+using Mine.Core.Scripts.Gameplay.Databases;
 using Mine.Core.Scripts.Gameplay.Food_Folder;
 using UnityEngine;
 using Zenject;
@@ -23,7 +23,7 @@ namespace Mine.Core.Scripts.Gameplay.Pool
         {
             GameObject prefab = _foodDatabase.First(fd => fd.foodID == id).foodPrefab;
 
-            return _diContainer.InstantiatePrefab(prefab, new GameObjectCreationParameters()
+            return _diContainer.InstantiatePrefab(prefab, new GameObjectCreationParameters
             {
                 ParentTransform = _parent,
                 Position = (Random.insideUnitSphere * 2.5f) + (Vector3.up * Random.Range(3,5))

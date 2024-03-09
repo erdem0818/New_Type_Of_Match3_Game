@@ -1,11 +1,26 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Mine.Core.Scripts.Framework.Extensions_Folder
 {
     public static class Extensions
     {
+        public static List<TTarget> ToListAsConvert<TSource, TTarget>(this IEnumerable<TSource> enumerable) where TTarget : class
+        {
+            List<TSource> temp = enumerable.ToList();
+            List<TTarget> result = new List<TTarget>();
+            
+            foreach (var member in temp)
+            {
+                if (member is TTarget target)
+                    result.Add(target);
+            }
+
+            return result;
+        }
+
         public static bool AnyOut<TSource>(this IEnumerable<TSource> enumerable, Func<TSource, bool> predicate, out TSource t)
         {
             t = default;

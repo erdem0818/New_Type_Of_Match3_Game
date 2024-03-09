@@ -35,7 +35,7 @@ namespace Mine.Core.Scripts.Framework
             return sceneNames.All(ValidateSceneExistence);
         }
 
-        private bool ValidateSceneExistence(string sceneName)
+        private static bool ValidateSceneExistence(string sceneName)
         {
             return SceneUtility.GetBuildIndexByScenePath(PathPrefix + sceneName) != -1;
         }

@@ -1,4 +1,3 @@
-using Assets.Mine.Core.Scripts.Gameplay.Database;
 using Mine.Core.Scripts.Gameplay;
 using Mine.Core.Scripts.Gameplay.Databases;
 using Mine.Core.Scripts.Gameplay.Food_Folder;
@@ -19,17 +18,17 @@ namespace Mine.Core.Scripts.Injection
 
         public override void InstallBindings()
         {
+            BindSignals();
+
             Container.BindInstance(foodParent);
             Container.BindInstance(foodDatabase);
             Container.BindInstance(levelDatabase);
 
             Container.BindInterfacesAndSelfTo<Platform>().AsSingle().WithArguments(platform);
-            Container.BindInterfacesAndSelfTo<FoodPlacer>().AsSingle();
             Container.BindInterfacesAndSelfTo<MatchHandler>().AsSingle();
+            Container.BindInterfacesAndSelfTo<FoodPlacer>().AsSingle();
             Container.Bind<FoodCreator>().AsSingle();
             Container.BindInterfacesAndSelfTo<LevelHandler>().AsSingle();
-
-            BindSignals();
         }
 
         private void BindSignals()

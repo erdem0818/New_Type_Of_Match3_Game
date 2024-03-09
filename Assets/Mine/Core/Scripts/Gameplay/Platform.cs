@@ -90,8 +90,8 @@ namespace Mine.Core.Scripts.Gameplay
                 PlacePosition = GetPartPosition(placeIndex)
             });
             
-            bool b = _matchHandler.IsThereAnyMatchCheck(out var matches);
-             Debug.Log(b ?
+            bool matchCheck = MatchHandler.IsThereAnyMatchCheck(Parts, out var matches);
+             Debug.Log(matchCheck ?
                  "There is Match"
                      .ToBold()
                      .ToColor(new Color(0.9f, 0.1f, 0.9f)) :
@@ -99,7 +99,7 @@ namespace Mine.Core.Scripts.Gameplay
                      ToBold()
                      .ToColor(new Color(.1f, .1f, .1f)));
 
-             if (!b) return;
+             if (!matchCheck) return;
              
              _matchHandler.RequestMatch(matches);
         }
@@ -165,6 +165,7 @@ namespace Mine.Core.Scripts.Gameplay
                     continue;
 
                 Food food = Parts[i].CurrentFood;
+                //todo to method.
                 Parts[i + 1].IsOccupied = true;
                 Parts[i + 1].CurrentFood = food;
             }

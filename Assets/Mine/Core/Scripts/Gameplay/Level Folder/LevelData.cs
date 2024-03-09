@@ -22,6 +22,9 @@ namespace Mine.Core.Scripts.Gameplay.Level_Folder
         [Header("Quest")] 
         [HorizontalLine(2, EColor.Green)]
         public QuestData questData;
+        [Header("Time")]
+        [HorizontalLine(2, EColor.Green)]
+        public float levelTime;
     }
 }
 

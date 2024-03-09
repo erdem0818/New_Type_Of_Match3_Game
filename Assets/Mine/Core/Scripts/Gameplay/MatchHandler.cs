@@ -13,14 +13,14 @@ namespace Mine.Core.Scripts.Gameplay
     public class MatchHandler : IInitializable, IDisposable
     {
         private readonly SignalBus _signalBus;
-        private readonly Platform _platform;
+        //private readonly Platform _platform;
 
         private const int RequiredMatchCount = 3;
 
-        public MatchHandler(SignalBus signalBus, Platform platform)
+        public MatchHandler(SignalBus signalBus)
         {
             _signalBus = signalBus;
-            _platform = platform;   
+            //_platform = platform;   
         }
 
         public void Initialize()
@@ -56,26 +56,30 @@ namespace Mine.Core.Scripts.Gameplay
 
         private void OnFoodPlacingMovementFinished(FoodPlacingMovementFinishedSignal signal)
         {
-            if (IsThereAnyMatchCheck(out _)) return;
+            //if (IsThereAnyMatchCheck(out _)) return;
             
-            if(_platform.Full())
-            {
-                Debug.Log($"FAIL"
-                    .ToBold()
-                    .ToColor(new Color(0.85f, 0.15f, 0.05f)));
-            }
+            //todo not handle here -> level handler
+            // if(_platform.Full())
+            // {
+            //     Debug.Log($"FAIL"
+            //         .ToBold()
+            //         .ToColor(new Color(0.85f, 0.15f, 0.05f)));
+            // }
         }
 
-        public bool IsThereAnyMatchCheck(out List<(int index, Food food)> matches)
+        public static bool IsThereAnyMatchCheck(IEnumerable<PlatformPart> parts, out List<(int index, Food food)> matches)
         {
             //Info:: to prevent throw out of index exception.
-            int len = _platform.Parts.Count - RequiredMatchCount + 1;
+            //int len = _platform.Parts.Count - RequiredMatchCount + 1;
+            var partsList = parts.ToList();
+            int len = partsList.Count;
+            
             for(int i = 0; i < len; i++) 
             {
-                if (_platform.Parts[i].CurrentFood == null) continue;
-                if (_platform.Parts[i].CurrentFood.MarkedForMatch) continue;
+                if (partsList[i].CurrentFood == null) continue;
+                if (partsList[i].CurrentFood.MarkedForMatch) continue;
 
-                Food head = _platform.Parts[i].CurrentFood;
+                Food head = partsList[i].CurrentFood;
                 int headID = head.Data.foodID;
 
                 List<Food> looks = new()
@@ -85,7 +89,7 @@ namespace Mine.Core.Scripts.Gameplay
 
                 for (int j = 1; j < RequiredMatchCount; j++)
                 {
-                    Food neighbor = _platform.Parts[i + j].CurrentFood;
+                    Food neighbor = partsList[i + j].CurrentFood;
                     looks.Add(neighbor);
                 }
 

@@ -1,4 +1,3 @@
-using System;
 using Assets.Mine.Core.Scripts.Gameplay.FoodFolder;
 using DG.Tweening;
 using Mine.Core.Scripts.Gameplay.Signals;
@@ -12,11 +11,11 @@ namespace Mine.Core.Scripts.Gameplay.Food_Folder
     public class FoodModel
     {
         //todo remove setters ?
-        public ReactiveProperty<FoodData> Data { get; set; } = new();
-        public BoolReactiveProperty IsSelected { get; set; } = new();
-        public BoolReactiveProperty IsPlaced { get; set; } = new();
-        public BoolReactiveProperty IsSliding { get; set; } = new();
-        public BoolReactiveProperty MarkedForMatch { get; set; } = new();
+        public ReactiveProperty<FoodData> Data { get; } = new();
+        public BoolReactiveProperty IsSelected { get; } = new();
+        public BoolReactiveProperty IsPlaced { get; } = new();
+        public BoolReactiveProperty IsSliding { get; } = new();
+        public BoolReactiveProperty MarkedForMatch { get; } = new();
         
         public Sequence Sequence { get; set; }
         public Tween SlideTween { get; set; }

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Assets.Mine.Core.Scripts.Utility
+namespace Mine.Core.Scripts.Utility
 {
     public static class SaveAPI
     {

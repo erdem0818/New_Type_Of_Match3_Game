@@ -1,9 +1,9 @@
-using NaughtyAttributes;
 using System.Collections;
 using System.Collections.Generic;
+using NaughtyAttributes;
 using UnityEngine;
 
-namespace Assets.Mine.Core.Scripts.Gameplay.Database
+namespace Mine.Core.Scripts.Gameplay.Databases
 {
     public abstract class Database<T> : ScriptableObject, IEnumerable<T>
     {
@@ -14,7 +14,7 @@ namespace Assets.Mine.Core.Scripts.Gameplay.Database
         public T GetDBItem(int id)
         {
             if(id < 0) return items[0];
-            else if(id >= items.Count) return items[items.Count-1];
+            if(id >= items.Count) return items[^1];
             return items[id];
         }
 
