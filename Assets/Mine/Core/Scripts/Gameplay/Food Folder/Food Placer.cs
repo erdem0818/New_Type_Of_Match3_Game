@@ -78,6 +78,7 @@ namespace Mine.Core.Scripts.Gameplay.Food_Folder
             await PlayMatchAnimationAsync(signal.IndexFoodTuples);
             
             //Info after awaiting
+            
             _signalBus.TryFire(new MatchAnimationFinishedSignal
             {
                 IndexFoodTuples = signal.IndexFoodTuples

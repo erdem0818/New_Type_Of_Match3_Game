@@ -12,7 +12,7 @@ namespace Mine.Core.Scripts.Gameplay.UI.Panels
         protected override void OnPreAppear()
         {
             base.OnPreAppear();
-            levelText.text = $"Level Completed 12";
+            //levelText.text = $"Level Completed 12";
         }
     }
 }

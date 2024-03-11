@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Mine.Core.Scripts.Gameplay.Level_Folder
 {
     [System.Serializable]
-    public struct LevelDataPair
+    public struct FoodCountPair
     {
         public FoodData food;
         [Min(0)]
@@ -18,7 +18,7 @@ namespace Mine.Core.Scripts.Gameplay.Level_Folder
     {
         [Header("Level Start Foods")]
         [HorizontalLine(2, EColor.Yellow)]
-        public List<LevelDataPair> levelDataPairs;
+        public List<FoodCountPair> levelDataPairs;
         [Header("Quest")] 
         [HorizontalLine(2, EColor.Green)]
         public QuestData questData;

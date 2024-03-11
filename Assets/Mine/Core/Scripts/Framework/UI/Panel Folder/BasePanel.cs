@@ -99,6 +99,7 @@ namespace Mine.Core.Scripts.Framework.UI.Panel_Folder
         protected virtual void OnPostDisappear()
         {
             InvokeAttMethods(typeof(PostDisappearAttribute));
+            //todo UIStates - await until state -> disappeared to destroy
             Destroy(gameObject);
         }
         #endregion

@@ -67,8 +67,6 @@ namespace Mine.Core.Scripts.Gameplay
 
         public static bool IsThereAnyMatchCheck(IEnumerable<PlatformPart> parts, out List<(int index, Food food)> matches)
         {
-            //Info:: to prevent throw out of index exception.
-            //int len = _platform.Parts.Count - RequiredMatchCount + 1;
             var partsList = parts.ToList();
             int len = partsList.Count;
             

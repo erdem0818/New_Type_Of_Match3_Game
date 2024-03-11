@@ -52,3 +52,7 @@ New Flow
     set match food indexes null
     and move platform foods left
     and then slide them (movement)
+    
+TODO FRAMEWORK
+    -Sound Service - toggle on off
+    -Haptic Service - toggle on off

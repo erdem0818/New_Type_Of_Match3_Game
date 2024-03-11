@@ -31,3 +31,5 @@ MonoBehaviour:
     count: 6
   - food: {fileID: 11400000, guid: 169edb46c15d27a4e849ac26b1b39e25, type: 2}
     count: 6
+  questData: {fileID: 11400000, guid: d1b4f61374f90c94f95ed8c5bc604bfa, type: 2}
+  levelTime: 100
