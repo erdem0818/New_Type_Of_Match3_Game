@@ -2,10 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using Mine.Core.Scripts.Framework.Extensions_Folder;
 using Mine.Core.Scripts.Gameplay.Food_Folder;
 using Mine.Core.Scripts.Gameplay.Signals;
-using UnityEngine;
 using Zenject;
 
 namespace Mine.Core.Scripts.Gameplay

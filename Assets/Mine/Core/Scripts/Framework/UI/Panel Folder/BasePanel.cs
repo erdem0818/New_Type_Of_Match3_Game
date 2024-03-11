@@ -71,29 +71,23 @@ namespace Mine.Core.Scripts.Framework.UI.Panel_Folder
         #region Appear Methods
         protected virtual void OnPreAppear()
         {
-            //Debug.Log("Pre Appear".ToBold());
-            
             //todo keep extension but disabled for now.
             //extensions.ForEach(ex => ex.DoExtension());
-            //onPreAppearEvent?.Invoke();
             InvokeAttMethods(typeof(PreAppearAttribute));
         }
 
         public void Appear()
         {
-            //Debug.Log("Appear".ToBold());
+         
         }
 
         protected virtual void OnPostAppear()
         {
-            //Debug.Log("Post Appear".ToBold());
-            //onPostAppearEvent?.Invoke();
             InvokeAttMethods(typeof(PostAppearAttribute));
         }
 
         protected virtual void OnPreDisappear()
         {
-            //onPreDisappearEvent?.Invoke();
             InvokeAttMethods(typeof(PreDisappearAttribute));
         }
 
@@ -104,7 +98,6 @@ namespace Mine.Core.Scripts.Framework.UI.Panel_Folder
 
         protected virtual void OnPostDisappear()
         {
-            //onPostDisappearEvent?.Invoke();
             InvokeAttMethods(typeof(PostDisappearAttribute));
             Destroy(gameObject);
         }
