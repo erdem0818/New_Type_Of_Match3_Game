@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17e49a0a1fb9f5d4e8dc1408549a828f, type: 3}
   m_Name: SOInstaller
   m_EditorClassIdentifier: 
+  settings: {fileID: 11400000, guid: 48dce9279a9f6f246ae73c9ae11f4a66, type: 2}
   foodDatabase: {fileID: 11400000, guid: 916a6e3c6c1304f40a8766c22caf67c0, type: 2}
   levelDatabase: {fileID: 11400000, guid: 759a81057e1195d49be1095175d2e289, type: 2}
   fruitSpriteDatabase: {fileID: 11400000, guid: 3a27a0e80e8ce33409af151f19a4ed02, type: 2}

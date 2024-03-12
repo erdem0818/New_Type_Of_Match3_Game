@@ -1,4 +1,5 @@
 using System.Text;
+using Cysharp.Threading.Tasks;
 using Mine.Core.Scripts.Framework.Extensions_Folder;
 using Mine.Core.Scripts.Framework.UI.Panel_Folder;
 using Mine.Core.Scripts.Framework.UI.Panel_Folder.Popup_Folder;
@@ -11,41 +12,46 @@ namespace Mine.Core.Scripts.Gameplay
 {
     public class Test : MonoBehaviour
     {
-        [Inject] private Platform _platform;
+        //[Inject] private Platform _platform;
+        [Inject] private IPanelService _panelService;
 
-        [SerializeField] private DefaultPanel winPanel;
-        
         private void Awake()
         {
             Observable.EveryUpdate().Subscribe(_ =>
             {
                 if (Input.GetKeyDown(KeyCode.Space))
                 {
-                    _platform.ReorderAllMovement();
+                    //_platform.ReorderAllMovement();
                 }
 
                 if (Input.GetKeyDown(KeyCode.R))
                 {
-                    _platform.Reset();
+                    //_platform.Reset();
                 }
                 
                 if (Input.GetKeyDown(KeyCode.P))
                 {
                     var panel = FindFirstObjectByType<DefaultPopup>(FindObjectsInactive.Include);
                     panel.gameObject.SetActive(true);
-                    panel.ShowAsync();
+                    panel.ShowAsync().Forget();
                 }
                 
                 if (Input.GetKeyDown(KeyCode.L))
                 {
-                    var panel = FindFirstObjectByType<LoadingPanel>(FindObjectsInactive.Include);
-                    panel.gameObject.SetActive(true);
-                    panel.ShowAsync();
+                    //var panel = FindFirstObjectByType<LoadingPanel>(FindObjectsInactive.Include);
+                    CreateLoadingPanel().Forget();
                 }
             }).AddTo(gameObject);
         }
 
-        private void OnGUI()
+        private async UniTask CreateLoadingPanel()
+        {
+            var panel = await _panelService.Create<LoadingPanel>();
+            panel.gameObject.SetActive(true);
+            await panel.ShowAsync();
+        }
+
+        /*private void OnGUI()
         {
             if(_platform?.Parts == null) return;
 
@@ -71,6 +77,6 @@ namespace Mine.Core.Scripts.Gameplay
                 $"{builder2}".ToColor(Color.white), 
                 new GUIStyle { fontSize = 45,
                     richText = true,});
-        }
+        }*/
     }
 }
