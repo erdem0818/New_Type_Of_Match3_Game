@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using Mine.Core.Scripts.Framework.UI.Panel_Folder.Popup_Folder;
 using TMPro;
 using UnityEngine;
@@ -9,9 +10,9 @@ namespace Mine.Core.Scripts.Gameplay.UI.Panels
         [Header("Win Popup Related")]
         [SerializeField] private TMP_Text levelText;
         
-        protected override void OnPreAppear()
+        protected override async UniTask OnPreAppear()
         {
-            base.OnPreAppear();
+            await base.OnPreAppear();
             //levelText.text = $"Level Completed 12";
         }
     }

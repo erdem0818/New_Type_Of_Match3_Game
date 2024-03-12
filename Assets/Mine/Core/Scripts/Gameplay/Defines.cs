@@ -8,6 +8,7 @@ namespace Mine.Core.Scripts.Gameplay
 
         public const string PrefabFilter = "t:Prefab";
         public const string SoFilter     = "t:ScriptableObject";
+        public const string SpriteFilter  = "t:Sprite";
     }
 }
 

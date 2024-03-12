@@ -20,17 +20,17 @@ namespace Mine.Core.Scripts.Gameplay.Databases
             var paths = PathUtility.GetPathsInPath(Defines.SoFilter, LevelDataPath);
             //items = AssetDatabase.LoadAllAssetsAtPath(LevelDataPath).ToListAsConvert<Object, LevelData>();
             
-            // items = paths
-            //     .Select(AssetDatabase.LoadAssetAtPath<LevelData>)
-            //     .Where(dbObj => dbObj != null)
-            //     .ToList();
+            items = paths
+                 .Select(AssetDatabase.LoadAssetAtPath<LevelData>)
+                 .Where(dbObj => dbObj != null)
+                 .ToList();
 
-            foreach (var dbObj in paths
-                         .Select(AssetDatabase.LoadAssetAtPath<LevelData>)
-                         .Where(dbObj => dbObj != null))
-            {
-                items.Add(dbObj);
-            }
+            // foreach (var dbObj in paths
+            //              .Select(AssetDatabase.LoadAssetAtPath<LevelData>)
+            //              .Where(dbObj => dbObj != null))
+            // {
+            //     items.Add(dbObj);
+            // }
 
             // foreach (var path in paths)
             // {

@@ -29,19 +29,16 @@ namespace Mine.Core.Scripts.Framework.UI.Button_Folder
         private void DoMovement()
         {
             _tween?.Kill(true);
-            _tween = transform.DOPunchScale(
-                    new Vector3(0.15f, 0.15f, 1),
-                    0.075f,
-                    1,
-                    0.075f)
-                .SetAutoKill(true)
-                .OnComplete(() => transform.localScale = Vector3.one);
+            _tween = transform.DOScale(Vector3.one, 0.075f)
+                .SetEase(Ease.OutBack)
+                .SetAutoKill(true);
         }
 
         private void DoPressMovement()
         {
             _tween?.Kill();
-            _tween = transform.DOScale(Vector3.one * 0.9f, 0.075f)
+            _tween = transform.DOScale(Vector3.one * 0.85f, 0.075f)
+                .SetEase(Ease.InBack)
                 .SetAutoKill(true);
         }
 

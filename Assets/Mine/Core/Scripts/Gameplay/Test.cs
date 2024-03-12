@@ -1,8 +1,8 @@
 using System.Text;
-using Assets.Mine.Core.Scripts.Gameplay;
 using Mine.Core.Scripts.Framework.Extensions_Folder;
 using Mine.Core.Scripts.Framework.UI.Panel_Folder;
 using Mine.Core.Scripts.Framework.UI.Panel_Folder.Popup_Folder;
+using Mine.Core.Scripts.Gameplay.UI.Panels;
 using UniRx;
 using UnityEngine;
 using Zenject;
@@ -33,7 +33,14 @@ namespace Mine.Core.Scripts.Gameplay
                 {
                     var panel = FindFirstObjectByType<DefaultPopup>(FindObjectsInactive.Include);
                     panel.gameObject.SetActive(true);
-                    panel.Show();
+                    panel.ShowAsync();
+                }
+                
+                if (Input.GetKeyDown(KeyCode.L))
+                {
+                    var panel = FindFirstObjectByType<LoadingPanel>(FindObjectsInactive.Include);
+                    panel.gameObject.SetActive(true);
+                    panel.ShowAsync();
                 }
             }).AddTo(gameObject);
         }

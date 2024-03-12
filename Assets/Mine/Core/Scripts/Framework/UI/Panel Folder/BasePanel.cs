@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Cysharp.Threading.Tasks;
 using Mine.Core.Scripts.Framework.UI.Panel_Folder.Attribute_Folder;
 using NaughtyAttributes;
 using UnityEngine;
@@ -11,6 +12,14 @@ namespace Mine.Core.Scripts.Framework.UI.Panel_Folder
     {
         public abstract void DoExtension();
     }
+
+    public enum VisibleState
+    {
+        Appearing,
+        Appeared,
+        Disappearing,
+        Disappeared
+    }
     
     public abstract class BasePanel : MonoBehaviour
     {
@@ -18,6 +27,11 @@ namespace Mine.Core.Scripts.Framework.UI.Panel_Folder
         [HorizontalLine(2f, EColor.Black)]
         [SerializeField] private List<PanelExtension> extensions;
 
+        [SerializeField] [ReadOnly]
+        protected VisibleState State;
+        
+        //INFO:: Subject<Unit> appear - disappear events ?
+        
         private readonly Dictionary<Type, List<KeyValuePair<Component, MethodInfo>>> _attributedMethods = new();
 
         protected virtual void Awake()
@@ -66,56 +80,65 @@ namespace Mine.Core.Scripts.Framework.UI.Panel_Folder
             }
         }
         #endregion
-
-        //todo rename, not appear disappear maybe pre show pre hide
+        
+        //TODO vcontaier-mv-unirx example look.
         #region Appear Methods
-        protected virtual void OnPreAppear()
+        protected virtual async UniTask OnPreAppear()
         {
-            //todo keep extension but disabled for now.
             //extensions.ForEach(ex => ex.DoExtension());
+            State = VisibleState.Appearing;
             InvokeAttMethods(typeof(PreAppearAttribute));
         }
 
-        public void Appear()
-        {
-         
-        }
-
-        protected virtual void OnPostAppear()
-        {
-            InvokeAttMethods(typeof(PostAppearAttribute));
-        }
-
-        protected virtual void OnPreDisappear()
-        {
-            InvokeAttMethods(typeof(PreDisappearAttribute));
-        }
-
-        public void Disappear()
+        public async UniTask Appear()
         {
             
         }
 
-        protected virtual void OnPostDisappear()
+        protected virtual async UniTask OnPostAppear()
         {
+            State = VisibleState.Appeared;
+            InvokeAttMethods(typeof(PostAppearAttribute));
+        }
+
+        protected virtual async UniTask OnPreDisappear()
+        {
+            State = VisibleState.Disappearing;
+            InvokeAttMethods(typeof(PreDisappearAttribute));
+        }
+
+        public async UniTask Disappear()
+        {
+            
+        }
+
+        protected virtual async UniTask OnPostDisappear()
+        {
+            State = VisibleState.Disappeared;
             InvokeAttMethods(typeof(PostDisappearAttribute));
+            
             //todo UIStates - await until state -> disappeared to destroy
             Destroy(gameObject);
         }
+        
+        protected virtual UniTask WhenCompletedAsync() => UniTask.CompletedTask;
+        
         #endregion
 
-        public void Hide()
+        [Button]
+        public async UniTask HideAsync()
         {
-            OnPreDisappear();
-            Disappear();
-            OnPostDisappear();
+            await OnPreDisappear();
+            await Disappear();
+            await OnPostDisappear();
         }
 
-        public void Show()
+        [Button]
+        public async UniTask ShowAsync()
         {
-            OnPreAppear();
-            Appear();
-            OnPostAppear();
+            await OnPreAppear();
+            await Appear();
+            await OnPostAppear();
         }
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Mine.Core.Scripts.Gameplay.Databases
 {
-    public abstract class Database<T> : ScriptableObject, IEnumerable<T>
+    public abstract class Database<T> : ScriptableObject, IEnumerable<T> where T : class
     {
         [Header("DB Items")]
         [HorizontalLine(1, EColor.Red)]

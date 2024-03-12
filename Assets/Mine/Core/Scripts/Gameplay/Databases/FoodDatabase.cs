@@ -18,18 +18,18 @@ namespace Mine.Core.Scripts.Gameplay.Databases
         {
             items.Clear();
             var paths = PathUtility.GetPathsInPath(Defines.SoFilter, FoodPrefabPath);
-            // items = paths
-            //     .Select(AssetDatabase.LoadAssetAtPath<FoodData>)
-            //     .Where(dbObj => dbObj != null)
-            //     .ToList();
+             items = paths
+                 .Select(AssetDatabase.LoadAssetAtPath<FoodData>)
+                 .Where(dbObj => dbObj != null)
+                 .ToList();
 
             //items = AssetDatabase.LoadAllAssetsAtPath(FoodPrefabPath).ToListAsConvert<Object, FoodData>();
-            foreach (var dbObj in paths
-                         .Select(AssetDatabase.LoadAssetAtPath<FoodData>)
-                         .Where(dbObj => dbObj != null))
-            {
-                items.Add(dbObj);
-            }
+            // foreach (var dbObj in paths
+            //              .Select(AssetDatabase.LoadAssetAtPath<FoodData>)
+            //              .Where(dbObj => dbObj != null))
+            // {
+            //     items.Add(dbObj);
+            // }
 
             // foreach ( var path in paths ) 
             // {
@@ -37,8 +37,6 @@ namespace Mine.Core.Scripts.Gameplay.Databases
             //     if (dbObj != null) items.Add(dbObj);
             // }
         }
-        
-        //public static List<T> LoadAssetsAtPath() where T : UnityEngine
 #endif
     }
 }

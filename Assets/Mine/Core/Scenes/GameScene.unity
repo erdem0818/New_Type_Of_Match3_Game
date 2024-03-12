@@ -1479,9 +1479,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   foodParent: {fileID: 269958655}
+  platformParent: {fileID: 1078877317}
   foodDatabase: {fileID: 11400000, guid: 916a6e3c6c1304f40a8766c22caf67c0, type: 2}
   levelDatabase: {fileID: 11400000, guid: 759a81057e1195d49be1095175d2e289, type: 2}
-  platform: {fileID: 1078877317}
+  fruitSpriteDatabase: {fileID: 11400000, guid: 3a27a0e80e8ce33409af151f19a4ed02, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
+using UniRx;
 using UnityEngine;
 
 namespace Mine.Core.Scripts.Framework.Extensions_Folder
@@ -33,6 +35,19 @@ namespace Mine.Core.Scripts.Framework.Extensions_Folder
 
             return false;
         }
+        
+        //UniRx Extensions
+
+        #region UniRx
+
+        public static IDisposable SubscribeIntToTextPro(this IObservable<int> source, TMP_Text text)
+        {
+            return source.SubscribeWithState(text, (x, t) => t.text = $"{x}");
+        }
+
+        #endregion
+        
+        #region String
 
         public static string ToBold(this string str)
         {
@@ -54,12 +69,19 @@ namespace Mine.Core.Scripts.Framework.Extensions_Folder
         {
             return $"<size={size}>{str}</size>";
         }
-        
-        //Color
+
+        #endregion
+
+        #region Color
+
         public static Color SetAlpha(this Color color, float alpha)
         {
             return new Color(color.r, color.g, color.b, alpha);
         }
+
+        #endregion
+
+        #region Vector
 
         public static Vector2 WithX(this Vector2 vector2, float x)
         {
@@ -78,6 +100,8 @@ namespace Mine.Core.Scripts.Framework.Extensions_Folder
                 vector3.z.MultiplyByPercent(percent));
         }
 
+        #endregion
+        
         public static float MultiplyByPercent(this float f, float percent)
         {
             percent = Mathf.Clamp(percent, -100, 100);
