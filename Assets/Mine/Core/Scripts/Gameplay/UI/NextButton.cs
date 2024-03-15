@@ -26,7 +26,7 @@ namespace Mine.Core.Scripts.Gameplay.UI
                 .SetEase(Ease.InOutBack);
         }
 
-        [PostAppear]
+        /*[PostAppear]
         public void PostAppearTest()
         {
             Debug.Log("Post Appear");
@@ -49,6 +49,6 @@ namespace Mine.Core.Scripts.Gameplay.UI
         public void MultipleTest()
         {
             Debug.Log("Multiple Test".ToBold());
-        }
+        }*/
     }
 }

@@ -51,12 +51,12 @@ namespace Mine.Core.Scripts.Gameplay.Level_Folder
 
         private void CreateFoods()
         {
-            //todo get from save
             var save = SaveAPI.GetOrCreateData(Defines.LevelSaveKey, LevelArgs.Empty);
             _currentData = _database.GetDBItem(save.LastPlayedLevel);
             if (_currentData == null) 
             {
-                Debug.LogError("Level Data is null");
+                Debug.LogError("Level D" +
+                               "ata is null");
                 return; 
             }
 

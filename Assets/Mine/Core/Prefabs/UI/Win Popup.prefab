@@ -251,6 +251,7 @@ GameObject:
   - component: {fileID: 5225075512803398388}
   - component: {fileID: 6770589034303414699}
   - component: {fileID: 216056529122752048}
+  - component: {fileID: 954120923657066848}
   m_Layer: 5
   m_Name: Win Popup
   m_TagString: Untagged
@@ -331,6 +332,8 @@ MonoBehaviour:
   extensions:
   - {fileID: 216056529122752048}
   - {fileID: 318281827559781149}
+  state:
+    value: 0
   levelText: {fileID: 0}
 --- !u!114 &216056529122752048
 MonoBehaviour:
@@ -346,6 +349,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   backgroundImage: {fileID: 5225075512803398388}
   fadeDuration: 1
+--- !u!225 &954120923657066848
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3649406474038648269}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &3878343512036444905
 GameObject:
   m_ObjectHideFlags: 0

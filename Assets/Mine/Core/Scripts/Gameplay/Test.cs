@@ -12,7 +12,7 @@ namespace Mine.Core.Scripts.Gameplay
 {
     public class Test : MonoBehaviour
     {
-        //[Inject] private Platform _platform;
+        [Inject] private Platform _platform;
         [Inject] private IPanelService _panelService;
 
         private void Awake()
@@ -21,12 +21,12 @@ namespace Mine.Core.Scripts.Gameplay
             {
                 if (Input.GetKeyDown(KeyCode.Space))
                 {
-                    //_platform.ReorderAllMovement();
+                    _platform.ReorderAllMovement();
                 }
 
                 if (Input.GetKeyDown(KeyCode.R))
                 {
-                    //_platform.Reset();
+                    _platform.Reset();
                 }
                 
                 if (Input.GetKeyDown(KeyCode.P))
@@ -47,11 +47,10 @@ namespace Mine.Core.Scripts.Gameplay
         private async UniTask CreateLoadingPanel()
         {
             var panel = await _panelService.Create<LoadingPanel>();
-            panel.gameObject.SetActive(true);
             await panel.ShowAsync();
         }
 
-        /*private void OnGUI()
+        private void OnGUI()
         {
             if(_platform?.Parts == null) return;
 
@@ -77,6 +76,6 @@ namespace Mine.Core.Scripts.Gameplay
                 $"{builder2}".ToColor(Color.white), 
                 new GUIStyle { fontSize = 45,
                     richText = true,});
-        }*/
+        }
     }
 }

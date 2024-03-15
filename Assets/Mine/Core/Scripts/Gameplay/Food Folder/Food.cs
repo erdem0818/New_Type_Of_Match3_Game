@@ -1,5 +1,6 @@
 using Assets.Mine.Core.Scripts.Gameplay.FoodFolder;
 using DG.Tweening;
+using Mine.Core.Scripts.Framework.UI.Panel_Folder;
 using Mine.Core.Scripts.Gameplay.Signals;
 using UniRx;
 using UniRx.Triggers;

@@ -9,11 +9,5 @@ namespace Mine.Core.Scripts.Gameplay.UI.Panels
     {
         [Header("Win Popup Related")]
         [SerializeField] private TMP_Text levelText;
-        
-        protected override async UniTask OnPreAppear()
-        {
-            await base.OnPreAppear();
-            //levelText.text = $"Level Completed 12";
-        }
     }
 }

@@ -760,6 +760,7 @@ GameObject:
   - component: {fileID: 8988604125072047320}
   - component: {fileID: 5995506108385566809}
   - component: {fileID: 1702529838740984844}
+  - component: {fileID: 5893775809851272793}
   m_Layer: 5
   m_Name: GamePlay Panel
   m_TagString: Untagged
@@ -839,11 +840,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   extensions: []
+  state:
+    value: 0
   view:
     <TimerText>k__BackingField: {fileID: 118933354401405124}
     <LevelText>k__BackingField: {fileID: 6707974600190032333}
     <GoalContainer>k__BackingField: {fileID: 2553996452577448631}
     <PowerUpContainer>k__BackingField: {fileID: 7543776543764695873}
+--- !u!225 &5893775809851272793
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4838974760560111595}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &5554957652742315888
 GameObject:
   m_ObjectHideFlags: 0

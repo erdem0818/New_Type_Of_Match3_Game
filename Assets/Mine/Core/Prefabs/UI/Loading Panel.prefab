@@ -221,6 +221,7 @@ GameObject:
   - component: {fileID: 9111951489337470309}
   - component: {fileID: 3923435042340926147}
   - component: {fileID: 728575772923438744}
+  - component: {fileID: 8410920139910874245}
   m_Layer: 5
   m_Name: Loading Panel
   m_TagString: Untagged
@@ -300,5 +301,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   extensions: []
-  State: 0
+  state:
+    value: 0
   loadingImage: {fileID: 3670996393835073962}
+--- !u!225 &8410920139910874245
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5074867414018526855}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0

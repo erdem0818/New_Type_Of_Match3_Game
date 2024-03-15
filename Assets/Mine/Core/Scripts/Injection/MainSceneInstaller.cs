@@ -12,7 +12,13 @@ namespace Mine.Core.Scripts.Injection
         public override void InstallBindings()
         {
             //todo audio, haptic etc.
-            Container.Bind<IPanelService>().To<PanelService>().AsSingle().WithArguments(mainCanvas);
+            Container.BindInterfacesTo<PanelService>().AsSingle().WithArguments(mainCanvas);
+
+            // ProjectContext.Instance.Container
+            //     .Bind<IPanelService>()
+            //     .To<PanelService>()
+            //     .AsSingle()
+            //     .WithArguments(mainCanvas);
         }
     }
 }

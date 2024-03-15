@@ -12,7 +12,8 @@ namespace Mine.Core.Scripts.Framework.UI.Panel_Folder.Panel_Extensions
         [SerializeField] private float percent = -20;
         [SerializeField] private Ease ease = Ease.InOutBack;
         
-        [PreAppear]
+        //was pre
+        [PostAppear]
         public override void DoExtension()
         {
             RectTransform rectTransform = GetComponent<RectTransform>();
