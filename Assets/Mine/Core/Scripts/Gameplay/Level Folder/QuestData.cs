@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Assets.Mine.Core.Scripts.Gameplay.FoodFolder;
+using Mine.Core.Scripts.Gameplay.Food_Folder;
 using UnityEngine;
 
 namespace Mine.Core.Scripts.Gameplay.Level_Folder

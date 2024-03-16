@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using Assets.Mine.Core.Scripts.Gameplay;
-using Assets.Mine.Core.Scripts.Gameplay.FoodFolder;
-using Mine.Core.Scripts.Framework.Extensions_Folder;
 using Mine.Core.Scripts.Gameplay;
+using Mine.Core.Scripts.Framework.Extensions_Folder;
 using Mine.Core.Scripts.Gameplay.Food_Folder;
 using UnityEditor;
 using UnityEngine;
@@ -15,6 +13,7 @@ namespace Mine.Core.Scripts.Editor
     {
         private const string Path = "Assets/Mine/Core/Prefabs/Food Prefabs";
         private const string DataPath = "Assets/Mine/Core/Scripts/Data/Food Datas";
+        
         private Vector2 _scrollPosition;
         private readonly List<FoodData> _foodDataList = new();
         private readonly List<GameObject> _prefabs = new();

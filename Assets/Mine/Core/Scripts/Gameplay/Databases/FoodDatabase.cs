@@ -1,6 +1,6 @@
 using System.Linq;
-using Assets.Mine.Core.Scripts.Gameplay.FoodFolder;
 using Mine.Core.Scripts.Framework.Extensions_Folder;
+using Mine.Core.Scripts.Gameplay.Food_Folder;
 using NaughtyAttributes;
 using UnityEditor;
 using UnityEngine;

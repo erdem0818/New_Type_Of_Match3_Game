@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using Mine.Core.Scripts.Framework.Extensions_Folder;
 using Mine.Core.Scripts.Framework.UI.Panel_Folder.Attribute_Folder;
@@ -37,10 +38,26 @@ namespace Mine.Core.Scripts.Framework.UI.Panel_Folder
 
         private CanvasGroup _canvasGroup;
         private CanvasGroup CanvasGroup => _canvasGroup ?
-            _canvasGroup : _canvasGroup = GetComponent<CanvasGroup>(); 
+            _canvasGroup : _canvasGroup = GetComponent<CanvasGroup>();
+
+        #region Events
+        private readonly Subject<Unit> _preInitializeEvent = new();
+        private readonly Subject<Unit> _postInitializeEvent = new();
+        private readonly Subject<Unit> _appearEvent = new();
+        private readonly Subject<Unit> _appearedEvent = new();
+        private readonly Subject<Unit> _disappearEvent = new();
+        private readonly Subject<Unit> _disappearedEvent = new();
         
-        //INFO:: Subject<Unit> appear - disappear events ?
-        //INFO:: public IObservable<Unit> OnPreInitialize => preInitializeEvent.Share();
+        public IObservable<Unit> OnPreInitialize => _preInitializeEvent.Share();
+        public IObservable<Unit> OnPostInitialize => _postInitializeEvent.Share();
+        public IObservable<Unit> OnAppear => _appearEvent.Share();
+        public IObservable<Unit> OnAppearing => OnChangingVisibleState(OnAppear, OnAppeared);
+        public IObservable<Unit> OnAppeared => _appearedEvent.Share();
+        public IObservable<Unit> OnUpdate => OnChangingVisibleState(OnAppeared, OnDisappear);
+        public IObservable<Unit> OnDisappear => _disappearEvent.Share();
+        public IObservable<Unit> OnDisappearing => OnChangingVisibleState(OnDisappear, OnDisappeared);
+        public IObservable<Unit> OnDisappeared => _disappearedEvent.Share();
+        #endregion
 
         private readonly Dictionary<Type, List<KeyValuePair<Component, MethodInfo>>> _attributedMethods = new();
 
@@ -104,35 +121,40 @@ namespace Mine.Core.Scripts.Framework.UI.Panel_Folder
         protected virtual UniTask WhenPostDisappearAsync() => UniTask.CompletedTask;
 
         [Button]
-        public async UniTask ShowAsync()
+        public async UniTask ShowAsync(float delay = 0f, CancellationToken token = default)
         {
             gameObject.SetActive(false);
+            //_preInitializeEvent.OnNext(Unit.Default);
+            await UniTask.Delay(TimeSpan.FromSeconds(delay), cancellationToken: token);
             
             var rect = (RectTransform) transform;
             await InitializeRectTransform(rect);
             CanvasGroup.alpha = 1;
             
+            _preInitializeEvent.OnNext(Unit.Default);
+
             InvokeAttMethods(typeof(PreAppearAttribute));
             await WhenPreAppearAsync();
             
-            //INFO:: preInitializeEvent.OnNext(Unit.Default);
+            //_preInitializeEvent.OnNext(Unit.Default);
             gameObject.SetActive(true);
-            //INFO:: postInitializeEvent.OnNext(Unit.Default);
+            _postInitializeEvent.OnNext(Unit.Default);
 
             state.Value = VisibleState.Appearing;
-
+            _appearEvent.OnNext(Unit.Default);
+            
             InvokeAttMethods(typeof(PostAppearAttribute));
             await WhenPostAppearAsync();
             
             state.Value = VisibleState.Appeared;
-            
-            //INFO:: appearedEvent.OnNext(Unit.Default); 
+            _appearedEvent.OnNext(Unit.Default); 
         }
         
         [Button]
         public async UniTask HideAsync()
         {
             state.Value = VisibleState.Disappearing;
+            _disappearEvent.OnNext(Unit.Default);
 
             await UniTask.Yield(destroyCancellationToken);
             
@@ -143,9 +165,9 @@ namespace Mine.Core.Scripts.Framework.UI.Panel_Folder
             await WhenPostDisappearAsync();
 
             state.Value = VisibleState.Disappeared;
-            
-            await RequestDestroy();
+            _disappearedEvent.OnNext(Unit.Default);
 
+            await RequestDestroy();
         }
         
         private async UniTask RequestDestroy()
@@ -175,6 +197,16 @@ namespace Mine.Core.Scripts.Framework.UI.Panel_Folder
                 .TakeUntil(end)
                 .RepeatUntilDestroy(gameObject)
                 .Share();
+        }
+
+        protected void OnDestroy()
+        {
+            _preInitializeEvent.Dispose();
+            _postInitializeEvent.Dispose();
+            _appearedEvent.Dispose();
+            _appearedEvent.Dispose();
+            _disappearEvent.Dispose();
+            _disappearedEvent.Dispose();
         }
     }
 }

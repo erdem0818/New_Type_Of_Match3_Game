@@ -1,7 +1,7 @@
 using NaughtyAttributes;
 using UnityEngine;
 
-namespace Assets.Mine.Core.Scripts.Gameplay.FoodFolder
+namespace Mine.Core.Scripts.Gameplay.Food_Folder
 {
     [CreateAssetMenu(menuName = "Data/Food Data", fileName = "Food Data")]
     public class FoodData : ScriptableObject

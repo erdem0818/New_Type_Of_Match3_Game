@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Assets.Mine.Core.Scripts.Gameplay.FoodFolder;
 using Mine.Core.Scripts.Gameplay.Food_Folder;
 using UnityEngine;
 

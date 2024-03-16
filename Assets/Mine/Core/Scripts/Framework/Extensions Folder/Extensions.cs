@@ -11,13 +11,14 @@ namespace Mine.Core.Scripts.Framework.Extensions_Folder
     {
         public static List<TTarget> ToListAsConvert<TSource, TTarget>(this IEnumerable<TSource> enumerable) where TTarget : class
         {
-            List<TSource> temp = enumerable.ToList();
             List<TTarget> result = new List<TTarget>();
             
-            foreach (var member in temp)
+            foreach (var member in enumerable)
             {
                 if (member is TTarget target)
                     result.Add(target);
+                else
+                    Debug.Log("null");
             }
 
             return result;

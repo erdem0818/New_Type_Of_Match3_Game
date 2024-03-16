@@ -1,5 +1,6 @@
 using System.Text;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using Mine.Core.Scripts.Framework.Extensions_Folder;
 using Mine.Core.Scripts.Framework.UI.Panel_Folder;
 using Mine.Core.Scripts.Framework.UI.Panel_Folder.Popup_Folder;
@@ -47,7 +48,9 @@ namespace Mine.Core.Scripts.Gameplay
         private async UniTask CreateLoadingPanel()
         {
             var panel = await _panelService.Create<LoadingPanel>();
-            await panel.ShowAsync();
+            await panel.ShowAsync(0f, destroyCancellationToken);
+            await UniTask.Delay(5000, cancellationToken: destroyCancellationToken);
+            await panel.HideAsync();
         }
 
         private void OnGUI()
