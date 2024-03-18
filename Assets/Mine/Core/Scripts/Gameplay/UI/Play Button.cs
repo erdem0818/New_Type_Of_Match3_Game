@@ -17,7 +17,7 @@ namespace Mine.Core.Scripts.Gameplay.UI
             
             ShowLoadingPanel().Forget();
         }
-
+        
         private async UniTask ShowLoadingPanel()
         {
             LoadingPanel loadingPanel = await _panelService.Create<LoadingPanel>();
@@ -26,7 +26,7 @@ namespace Mine.Core.Scripts.Gameplay.UI
             await loadingPanel.ShowAsync();
             await SceneManager.LoadSceneAsync("GameScene", LoadSceneMode.Additive).ToUniTask();
             await HideLoadingPanel();
-            //todo hide main panel
+            await _panelService.HidePanel<MainMenuPanel>();
         }
 
         private async UniTask HideLoadingPanel()

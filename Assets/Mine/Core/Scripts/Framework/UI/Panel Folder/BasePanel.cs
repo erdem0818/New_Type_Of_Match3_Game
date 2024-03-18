@@ -10,6 +10,7 @@ using NaughtyAttributes;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
+using Zenject;
 
 namespace Mine.Core.Scripts.Framework.UI.Panel_Folder
 {
@@ -29,6 +30,10 @@ namespace Mine.Core.Scripts.Framework.UI.Panel_Folder
     [RequireComponent(typeof(CanvasGroup))]
     public abstract class BasePanel : MonoBehaviour
     {
+        [Inject] private PanelService _panelService;
+        
+        [SerializeField] private bool selfInit;
+        
         [Header("Extensions")]
         [HorizontalLine(2f, EColor.Black)]
         [SerializeField] private List<PanelExtension> extensions;
@@ -68,6 +73,11 @@ namespace Mine.Core.Scripts.Framework.UI.Panel_Folder
             {
                 Debug.Log(vs.ToString().ToColor(Defines.Lemon));
             });
+
+            if (!selfInit) return;
+            
+            _panelService.AddPanelToViews(this);
+            ShowAsync().Forget();
         }
         
         #region Reflection

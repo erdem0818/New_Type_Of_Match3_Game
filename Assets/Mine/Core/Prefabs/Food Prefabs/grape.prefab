@@ -94,9 +94,9 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9201824844684129123}
   serializedVersion: 4
-  m_Mass: 1
+  m_Mass: 3
   m_Drag: 1
-  m_AngularDrag: 0.25
+  m_AngularDrag: 1
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -149,45 +149,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: dac4e77bca5f08d489295ca27d6eec6f, type: 2}
-  curve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 2.5117192
-      outSlope: 2.5117192
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.27998394
-      value: 0.70324105
-      inSlope: 1.5494143
-      outSlope: 1.5494143
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.74077004
-      value: 0.9737729
-      inSlope: 0.12856351
-      outSlope: 0.12856351
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.1942716
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0.10117317
-      outSlope: 0.10117317
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4

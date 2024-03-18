@@ -11,7 +11,7 @@ namespace Mine.Core.Scripts.Editor
 {
     public class FoodDataCreator : ZenjectEditorWindow
     {
-        private const string Path = "Assets/Mine/Core/Prefabs/Food Prefabs";
+        private const string Path     = "Assets/Mine/Core/Prefabs/Food Prefabs";
         private const string DataPath = "Assets/Mine/Core/Scripts/Data/Food Datas";
         
         private Vector2 _scrollPosition;
@@ -54,7 +54,7 @@ namespace Mine.Core.Scripts.Editor
 
             DisplayPrefabs();
 
-            if(GUILayout.Button("Validata All Data", new GUILayoutOption[]
+            if(GUILayout.Button("Validate All Data", new[]
                {
                    GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(false), GUILayout.Height(35)
                }))
@@ -104,7 +104,7 @@ namespace Mine.Core.Scripts.Editor
 
                 bool anyOut = dataPaths.AnyOut(dp => dp.Contains(obj.name), out var outPath);
 
-                GUI.backgroundColor = anyOut == true ? new Color(0.7f, 0.7f, 0.7f) : new Color(0.1f, 0.6f, 0.85f); 
+                GUI.backgroundColor = anyOut ? new Color(0.7f, 0.7f, 0.7f) : new Color(0.1f, 0.6f, 0.85f); 
 
                 if (GUILayout.Button($"Create Data For {obj.name}",
                         GUILayout.Width(150), 
@@ -114,12 +114,15 @@ namespace Mine.Core.Scripts.Editor
                     if(anyOut == false)
                     {
                         FoodData data = CreateInstance(typeof(FoodData)) as FoodData;
-                        data.name = $"{obj.name} Data";
-                        string dataPath = $"{DataPath}/{obj.name}.asset";
-                        AssetDatabase.CreateAsset(data, dataPath);
-                        AssetDatabase.SaveAssets();
+                        if (data != null)
+                        {
+                            data.name = $"{obj.name} Data";
+                            string dataPath = $"{DataPath}/{obj.name}.asset";
+                            AssetDatabase.CreateAsset(data, dataPath);
+                            AssetDatabase.SaveAssets();
 
-                        Selection.activeObject = data;
+                            Selection.activeObject = data;
+                        }
                     }
                     else
                     {
@@ -203,13 +206,13 @@ namespace Mine.Core.Scripts.Editor
             EditorGUILayout.EndVertical();
         }
 
-        private void DisplayPrefab(Food prefab)
+        private static void DisplayPrefab(Food prefab)
         {
             SerializedObject serializedObject = new(prefab);
             SerializedProperty dataProp = serializedObject.FindProperty("data");
 
             EditorGUILayout.BeginVertical();
-            EditorGUILayout.PropertyField(dataProp, new GUIContent(), new GUILayoutOption[]
+            EditorGUILayout.PropertyField(dataProp, new GUIContent(), new[]
             {
                 GUILayout.MinWidth(100), GUILayout.ExpandWidth(false)
             });

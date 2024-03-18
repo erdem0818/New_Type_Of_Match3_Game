@@ -16,8 +16,7 @@ namespace Mine.Core.Scripts.Gameplay.Signals
         public Vector3 PlacePosition { get; set; }
     }
 
-    public struct FoodPlacingMovementFinishedSignal
-    {}
+    public struct FoodPlacingMovementFinishedSignal {}
 
     public struct MatchAnimationStartSignal
     {

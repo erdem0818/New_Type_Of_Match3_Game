@@ -13,7 +13,6 @@ namespace Mine.Core.Scripts.Framework
 
         [Header("Scenes Path")]
         [HorizontalLine(2, EColor.Blue)]
-        //[Scene]
         [SerializeField] private List<string> sceneNames;
 
         private async void Awake()
