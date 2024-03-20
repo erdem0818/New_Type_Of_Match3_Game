@@ -7,6 +7,7 @@ namespace Mine.Core.Scripts.Framework.UI.Panel_Folder.Popup_Folder
 {
     public class DefaultPopup : BasePanel
     {
+        //todo enable if attributes or custom editor - tabs
         [SerializeField] private Transform popupRect;
         [SerializeField] private bool showAnimation;
         [SerializeField] private bool hideAnimation;

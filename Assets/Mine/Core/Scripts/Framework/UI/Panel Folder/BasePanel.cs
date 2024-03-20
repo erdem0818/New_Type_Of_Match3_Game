@@ -191,9 +191,6 @@ namespace Mine.Core.Scripts.Framework.UI.Panel_Folder
             rect.localRotation = Quaternion.identity;
         }
         
-        //todo try this public IObservable<Unit> OnUpdate => OnChangingVisibleState(OnAppeared, OnDisappear);
-        //todo what it is doing
-        //todo add IObservable<Unit> props
         private IObservable<Unit> OnChangingVisibleState(IObservable<Unit> begin, IObservable<Unit> end)
         {
             return this.UpdateAsObservable()
