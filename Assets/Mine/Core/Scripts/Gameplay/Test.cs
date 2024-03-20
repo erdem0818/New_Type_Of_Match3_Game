@@ -50,7 +50,8 @@ namespace Mine.Core.Scripts.Gameplay
             var panel = await _panelService.Create<WinPopup>();
             await panel.ShowAsync(0f, destroyCancellationToken);
             await UniTask.Delay(5000, cancellationToken: destroyCancellationToken);
-            await panel.HideAsync();
+            if (panel != null)
+                await panel.HideAsync();
         }
 
         private void OnGUI()

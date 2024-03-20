@@ -33,10 +33,6 @@ namespace Mine.Core.Scripts.Framework.UI.Panel_Folder
         [Inject] private PanelService _panelService;
         
         [SerializeField] private bool selfInit;
-        
-        [Header("Extensions")]
-        [HorizontalLine(2f, EColor.Black)]
-        [SerializeField] private List<PanelExtension> extensions;
 
         [SerializeField] [ReadOnly]
         protected ReactiveProperty<VisibleState> state = new (VisibleState.Appearing);

@@ -7,6 +7,6 @@ namespace Mine.Core.Scripts.Gameplay.UI.Panels
     public class WinPopup : DefaultPopup
     {
         [Header("Win Popup Related")]
-        [SerializeField] private TMP_Text levelText;
+        [SerializeField] private TMP_Text scoreText;
     }
 }
