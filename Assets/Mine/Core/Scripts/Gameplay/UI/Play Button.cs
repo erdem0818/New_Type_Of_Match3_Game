@@ -11,11 +11,10 @@ namespace Mine.Core.Scripts.Gameplay.UI
     {
         [Inject] private IPanelService _panelService;
         
-        protected override void OnClick()
+        protected override async UniTask OnClick()
         {
-            base.OnClick();
-            
-            ShowLoadingPanel().Forget();
+            await base.OnClick();
+            await ShowLoadingPanel();
         }
         
         private async UniTask ShowLoadingPanel()

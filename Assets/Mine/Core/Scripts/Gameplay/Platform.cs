@@ -91,7 +91,7 @@ namespace Mine.Core.Scripts.Gameplay
             });
             
             bool matchCheck = MatchHandler.IsThereAnyMatchCheck(Parts, out var matches);
-             Debug.Log(matchCheck ?
+            Debug.Log(matchCheck ?
                  "There is Match"
                      .ToBold()
                      .ToColor(new Color(0.9f, 0.1f, 0.9f)) :

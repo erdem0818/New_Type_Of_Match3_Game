@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Mine.Core.Scripts.Framework.Extensions_Folder;
 using Mine.Core.Scripts.Framework.UI.Button_Folder;
@@ -8,9 +9,9 @@ namespace Mine.Core.Scripts.Gameplay.UI
 {
     public class NextButton : DefaultButton
     {
-        protected override void OnClick()
+        protected override async UniTask OnClick()
         {
-            base.OnClick();
+            await base.OnClick();
 
             Debug.Log("Next Button On Click");
         }
@@ -25,30 +26,5 @@ namespace Mine.Core.Scripts.Gameplay.UI
             rectTransform.DOAnchorPos(currentPos, 0.75f)
                 .SetEase(Ease.InOutBack);
         }
-
-        /*[PostAppear]
-        public void PostAppearTest()
-        {
-            Debug.Log("Post Appear");
-        }
-        
-        [PreDisappear]
-        public void PreDisappearTest()
-        {
-            Debug.Log("Pre Disappear");
-        }
-        
-        [PostDisappear]
-        public void PostDisappearTest()
-        {
-            Debug.Log("Post Disappear");
-        }
-        
-        [PreAppear]
-        [PostDisappear]
-        public void MultipleTest()
-        {
-            Debug.Log("Multiple Test".ToBold());
-        }*/
     }
 }

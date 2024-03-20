@@ -47,7 +47,7 @@ namespace Mine.Core.Scripts.Gameplay
 
         private async UniTask CreateLoadingPanel()
         {
-            var panel = await _panelService.Create<LoadingPanel>();
+            var panel = await _panelService.Create<WinPopup>();
             await panel.ShowAsync(0f, destroyCancellationToken);
             await UniTask.Delay(5000, cancellationToken: destroyCancellationToken);
             await panel.HideAsync();

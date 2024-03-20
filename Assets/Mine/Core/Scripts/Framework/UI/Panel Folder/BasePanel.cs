@@ -134,7 +134,6 @@ namespace Mine.Core.Scripts.Framework.UI.Panel_Folder
         public async UniTask ShowAsync(float delay = 0f, CancellationToken token = default)
         {
             gameObject.SetActive(false);
-            //_preInitializeEvent.OnNext(Unit.Default);
             await UniTask.Delay(TimeSpan.FromSeconds(delay), cancellationToken: token);
             
             var rect = (RectTransform) transform;
@@ -146,7 +145,6 @@ namespace Mine.Core.Scripts.Framework.UI.Panel_Folder
             InvokeAttMethods(typeof(PreAppearAttribute));
             await WhenPreAppearAsync();
             
-            //_preInitializeEvent.OnNext(Unit.Default);
             gameObject.SetActive(true);
             _postInitializeEvent.OnNext(Unit.Default);
 
