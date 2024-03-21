@@ -37,6 +37,17 @@ namespace Mine.Core.Scripts.Gameplay.UI.Panels
             //                     
             // }).AddTo(gameObject);
 
+            OnPreInitialize.Subscribe(_ =>
+            {
+                Vector2 imagePos = loadingImage.GetComponent<RectTransform>().anchoredPosition;
+                imagePos.y += 400;
+                loadingImage.GetComponent<RectTransform>().anchoredPosition = imagePos;
+            
+                Vector2 textPos = textTransform.rectTransform.anchoredPosition;
+                textPos.y -= 400;
+                textTransform.rectTransform.anchoredPosition = textPos;
+            });
+
             _cts = new CancellationTokenSource();
             OnDisappear.Subscribe(_ =>
             {
@@ -46,10 +57,19 @@ namespace Mine.Core.Scripts.Gameplay.UI.Panels
             });
         }
 
-        protected override UniTask WhenPostAppearAsync()
+        protected override async UniTask WhenPostAppearAsync()
         {
+            Sequence sequence = DOTween.Sequence();
+            float iTarget = loadingImage.rectTransform.anchoredPosition.y - 400;
+            float tTarget = textTransform.rectTransform.anchoredPosition.y + 400;
+
+            await sequence
+                .Join(loadingImage.rectTransform.DOAnchorPosY(iTarget, 0.45f).SetEase(Ease.InOutBack))
+                .Join(textTransform.rectTransform.DOAnchorPosY(tTarget, 0.45f).SetEase(Ease.InOutBack))
+                .AsyncWaitForCompletion();
+            
             PlayLoadingAnimation(_cts.Token).Forget();
-            return base.WhenPostAppearAsync();
+            await base.WhenPostAppearAsync();
         }
 
         protected override async UniTask WhenPreDisappearAsync()

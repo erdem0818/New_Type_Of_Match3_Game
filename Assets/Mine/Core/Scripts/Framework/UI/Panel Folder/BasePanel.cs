@@ -182,9 +182,10 @@ namespace Mine.Core.Scripts.Framework.UI.Panel_Folder
         
         #endregion
 
-        private async UniTask InitializeRectTransform(RectTransform rect)
+        private static async UniTask InitializeRectTransform(RectTransform rect)
         {
-            rect.sizeDelta = Vector2.zero;
+            //INFO:: for some reason zero does not expand to all screen.
+            rect.sizeDelta = new Vector2(5f, 5f); //Vector2.zero;
             await UniTask.Yield();
             rect.anchoredPosition = Vector2.zero;
             rect.localScale = Vector3.one;
