@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Mine.Core.Scripts.Framework.UI.Button_Folder;
 using Mine.Core.Scripts.Framework.UI.Panel_Folder;
+using Mine.Core.Scripts.Framework.Utility;
 using Mine.Core.Scripts.Gameplay.UI.Panels;
 using UnityEngine.SceneManagement;
 using Zenject;
@@ -9,6 +10,7 @@ namespace Mine.Core.Scripts.Gameplay.UI
 {
     public class PlayButton : Button_EA
     {
+        [Inject] private ISceneHandler _sceneHandler;
         [Inject] private IPanelService _panelService;
         
         protected override async UniTask OnClick()
@@ -22,7 +24,8 @@ namespace Mine.Core.Scripts.Gameplay.UI
             LoadingPanel loadingPanel = await _panelService.Create<LoadingPanel>();
             await loadingPanel.ShowAsync();
             await UniTask.Delay(100, cancellationToken: destroyCancellationToken);
-            await SceneManager.LoadSceneAsync("GameScene", LoadSceneMode.Additive).ToUniTask();
+            //await SceneManager.LoadSceneAsync("GameScene", LoadSceneMode.Additive).ToUniTask();
+            await _sceneHandler.LoadSceneAsync("GameScene", LoadSceneMode.Additive);
             await _panelService.HidePanel<MainMenuPanel>();
             await HideLoadingPanel();
         }

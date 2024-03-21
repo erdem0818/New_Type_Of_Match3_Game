@@ -4,6 +4,8 @@ namespace Mine.Core.Scripts.Gameplay
 {
     public static class Defines
     {
+        public const string BootstrapSceneName = "BootstrapScene";
+        
         public const int AllFull = -111;
 
         public const string LevelSaveKey = "LevelSave";

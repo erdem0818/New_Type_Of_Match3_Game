@@ -22,13 +22,13 @@ namespace Mine.Core.Scripts.Framework
                 Debug.LogWarning("THERE ARE INCORRECT SCENE NAMES");
                 return;
             }
-
+            
             foreach (var currentScenePath in sceneNames.Select(t => PathPrefix + t))
             {
                 await SceneManager.LoadSceneAsync(currentScenePath, LoadSceneMode.Additive);
             }
         }
-
+        
         private bool ValidateAllScenes()
         {
             return sceneNames.All(ValidateSceneExistence);
@@ -40,4 +40,3 @@ namespace Mine.Core.Scripts.Framework
         }
     }
 }
-
