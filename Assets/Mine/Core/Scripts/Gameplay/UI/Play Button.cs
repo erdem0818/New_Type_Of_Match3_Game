@@ -23,16 +23,17 @@ namespace Mine.Core.Scripts.Gameplay.UI
         {
             LoadingPanel loadingPanel = await _panelService.Create<LoadingPanel>();
             await loadingPanel.ShowAsync();
+            
             await UniTask.Delay(100, cancellationToken: destroyCancellationToken);
-            //await SceneManager.LoadSceneAsync("GameScene", LoadSceneMode.Additive).ToUniTask();
             await _sceneHandler.LoadSceneAsync("GameScene", LoadSceneMode.Additive);
-            await _panelService.HidePanel<MainMenuPanel>();
+
             await HideLoadingPanel();
         }
 
         private async UniTask HideLoadingPanel()
         {
-            await UniTask.Delay(2000);
+            await UniTask.Delay(3000, DelayType.DeltaTime, PlayerLoopTiming.Update, destroyCancellationToken);
+            await _panelService.HidePanel<MainMenuPanel>();
             await _panelService.HidePanel<LoadingPanel>();
         }
     }

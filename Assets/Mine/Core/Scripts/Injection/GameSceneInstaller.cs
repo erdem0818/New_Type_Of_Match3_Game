@@ -1,8 +1,11 @@
+using Cysharp.Threading.Tasks;
+using Mine.Core.Scripts.Framework.UI.Panel_Folder;
 using Mine.Core.Scripts.Gameplay;
 using Mine.Core.Scripts.Gameplay.Food_Folder;
 using Mine.Core.Scripts.Gameplay.Level_Folder;
 using Mine.Core.Scripts.Gameplay.Pool;
 using Mine.Core.Scripts.Gameplay.Signals;
+using Mine.Core.Scripts.Gameplay.UI.Panels;
 using UnityEngine;
 using Zenject;
 
@@ -10,6 +13,8 @@ namespace Mine.Core.Scripts.Injection
 {
     public class GameSceneInstaller : MonoInstaller
     {
+        [Inject] private IPanelService _panelService;
+        
         [SerializeField] private Transform foodParent;
         [SerializeField] private Transform platformParent;
         
@@ -24,6 +29,8 @@ namespace Mine.Core.Scripts.Injection
             Container.BindInterfacesAndSelfTo<FoodPlacer>().AsSingle();
             Container.Bind<FoodCreator>().AsSingle();
             Container.BindInterfacesAndSelfTo<LevelHandler>().AsSingle();
+            
+            _panelService.ShowPanel<GameplayPanel>().Forget();
         }
 
         private void BindSignals()

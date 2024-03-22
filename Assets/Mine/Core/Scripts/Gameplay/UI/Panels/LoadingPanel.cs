@@ -82,10 +82,9 @@ namespace Mine.Core.Scripts.Gameplay.UI.Panels
             float imageXTarget = rightTarget.localPosition.x + loadingImage.rectTransform.sizeDelta.x / 2;
             float textXTarget = leftTarget.localPosition.x - textTransform.rectTransform.sizeDelta.x / 2;
 
-            await sequence.Join(loadingImage.rectTransform.DOAnchorPosX(imageXTarget, 0.75f)
-                    .SetEase(Ease.InOutBack))
-                .Join(textTransform.rectTransform.DOAnchorPosX(textXTarget, 0.75f)
-                    .SetEase(Ease.InOutBack))
+            await sequence
+                .Join(loadingImage.rectTransform.DOAnchorPosX(imageXTarget, 0.75f).SetEase(Ease.InOutBack))
+                .Join(textTransform.rectTransform.DOAnchorPosX(textXTarget, 0.75f).SetEase(Ease.InOutBack))
                 .Append(purpleBg.DOFade(0f, 0.75f))
                 .AsyncWaitForCompletion();
         }

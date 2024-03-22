@@ -25,7 +25,12 @@ namespace Mine.Core.Scripts.Framework
             
             foreach (var currentScenePath in sceneNames.Select(t => PathPrefix + t))
             {
-                await SceneManager.LoadSceneAsync(currentScenePath, LoadSceneMode.Additive);
+                var op = SceneManager.LoadSceneAsync(currentScenePath, LoadSceneMode.Additive);
+                await op;
+                if (!op.isDone) continue;
+                Scene scene = SceneManager.GetSceneByPath(currentScenePath);
+                if (scene.IsValid() && scene.isLoaded)
+                    SceneManager.SetActiveScene(scene);
             }
         }
         

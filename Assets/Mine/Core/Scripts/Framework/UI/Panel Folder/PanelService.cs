@@ -11,6 +11,7 @@ namespace Mine.Core.Scripts.Framework.UI.Panel_Folder
     public interface IPanelService
     {
         public UniTask<T> Create<T>() where T : BasePanel;
+        public UniTask ShowPanel<T>() where T : BasePanel;
         public UniTask HidePanel<T>() where T : BasePanel;
     }
     
@@ -31,7 +32,7 @@ namespace Mine.Core.Scripts.Framework.UI.Panel_Folder
         
         public void Initialize()
         {
-            BasePanel[] panels = _parent.GetComponentsInChildren<BasePanel>();
+            BasePanel[] panels = _parent.GetComponentsInChildren<BasePanel>(true);
             if (panels == null) return;
             foreach (BasePanel panel in panels)
                 _activeViews.Add(panel);
@@ -45,12 +46,27 @@ namespace Mine.Core.Scripts.Framework.UI.Panel_Folder
                 T panel = _diContainer.InstantiatePrefab(_panelDictionary[typeof(T)], _parent).GetComponent<T>();
                 await UniTask.CompletedTask;
                 _activeViews.Add(panel);
+                panel.gameObject.SetActive(false);
                 return panel;
             }
             catch (Exception e)
             {
                 Debug.Log(e.Message.ToBold().ToColor(new Color(0.9f, 0.25f, 0.2f, 1.0f)));
                 return null;
+            }
+        }
+
+        public async UniTask ShowPanel<T>() where T : BasePanel
+        {
+            try
+            {
+                var panel = _activeViews.First(p => typeof(T) == p.GetType());
+                await UniTask.CompletedTask;
+                panel.ShowAsync().Forget();
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e.Message.ToBold().ToColor(new Color(0.9f, 0.25f, 0.2f, 1.0f)));
             }
         }
 

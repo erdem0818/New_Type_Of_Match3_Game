@@ -39,11 +39,6 @@ namespace Mine.Core.Scripts.Gameplay.UI.Panels
 
         public void Bind()
         {
-            // _model.TimerText.SubscribeWithState<int, TMP_Text>(_view.TimerText, (i, text) => text.text = $"{i}")
-            //     .AddTo(DestroyObject);
-            // _model.LevelText.SubscribeWithState<int, TMP_Text>(_view.LevelText, (i, text) => text.text = $"{i}")
-            //     .AddTo(DestroyObject);
-
             _model.TimerText.SubscribeIntToTextPro(_view.TimerText).AddTo(DestroyObject);
             _model.LevelText.SubscribeIntToTextPro(_view.LevelText).AddTo(DestroyObject);
         }
