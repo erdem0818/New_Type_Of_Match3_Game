@@ -16,6 +16,8 @@ namespace Mine.Core.Scripts.Gameplay
         [Inject] private Platform _platform;
         [Inject] private IPanelService _panelService;
 
+        [SerializeField] private bool debug = false;
+        
         private void Awake()
         {
             Observable.EveryUpdate().Subscribe(_ =>
@@ -56,8 +58,9 @@ namespace Mine.Core.Scripts.Gameplay
 
         private void OnGUI()
         {
+            if (debug == false) return;
             if(_platform?.Parts == null) return;
-
+            
             StringBuilder builder = new StringBuilder();
             builder.Append('[');
             foreach (var part in _platform.Parts)

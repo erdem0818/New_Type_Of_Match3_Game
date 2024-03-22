@@ -17,12 +17,14 @@ namespace Mine.Core.Scripts.Gameplay.UI.Panels
         [field: SerializeField] public TMP_Text LevelText { get; private set; }
         [field: SerializeField] public Transform GoalContainer { get; private set; }
         [field: SerializeField] public Transform PowerUpContainer { get; private set; }
+        [field: SerializeField] public TMP_Text MovesText { get; private set; }
     }
 
     public class GameplayPanelModel
     {
-        public IntReactiveProperty TimerText { get; } = new();
-        public IntReactiveProperty LevelText { get; } = new();
+        public IntReactiveProperty Timer { get; } = new();
+        public IntReactiveProperty Level { get; } = new();
+        public IntReactiveProperty Moves { get; } = new();
     }
 
     public class GameplayPanelPresenter
@@ -39,8 +41,9 @@ namespace Mine.Core.Scripts.Gameplay.UI.Panels
 
         public void Bind()
         {
-            _model.TimerText.SubscribeIntToTextPro(_view.TimerText).AddTo(DestroyObject);
-            _model.LevelText.SubscribeIntToTextPro(_view.LevelText).AddTo(DestroyObject);
+            _model.Timer.SubscribeIntToTextPro(_view.TimerText).AddTo(DestroyObject);
+            _model.Level.SubscribeIntToTextPro(_view.LevelText).AddTo(DestroyObject);
+            _model.Moves.SubscribeIntToTextPro(_view.MovesText).AddTo(DestroyObject);
         }
     }
 
@@ -66,13 +69,13 @@ namespace Mine.Core.Scripts.Gameplay.UI.Panels
         [Button]
         public void IncreaseTimer()
         {
-            _model.TimerText.Value++;
+            _model.Timer.Value++;
         }
         
         [Button]
         public void IncreaseLevel()
         {
-            _model.LevelText.Value++;
+            _model.Level.Value++;
         }
     }
 }
