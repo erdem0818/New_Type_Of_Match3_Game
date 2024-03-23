@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
@@ -20,6 +21,12 @@ namespace Mine.Core.Scripts.Gameplay
         
         private void Awake()
         {
+            Observable.EveryUpdate().Throttle(TimeSpan.FromSeconds(2f), Scheduler.MainThreadFixedUpdate)
+                .Subscribe(_ =>
+                {
+                    Debug.Log("Throttle");
+                });
+            
             Observable.EveryUpdate().Subscribe(_ =>
             {
                 if (Input.GetKeyDown(KeyCode.Space))

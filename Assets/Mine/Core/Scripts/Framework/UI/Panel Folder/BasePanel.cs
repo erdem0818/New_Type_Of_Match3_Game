@@ -166,6 +166,8 @@ namespace Mine.Core.Scripts.Framework.UI.Panel_Folder
             await WhenPreDisappearAsync();
             
             gameObject.SetActive(false);
+            
+            InvokeAttMethods(typeof(PostDisappearAttribute));
             await WhenPostDisappearAsync();
 
             state.Value = VisibleState.Disappeared;

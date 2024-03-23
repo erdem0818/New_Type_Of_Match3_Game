@@ -136,9 +136,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c105608ba17592646abbdea678632aa5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  extensions: []
+  selfInit: 0
   state:
     value: 0
+  popupRect: {fileID: 0}
+  showAnimation: 0
+  hideAnimation: 0
 --- !u!225 &954120923657066848
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -321,7 +324,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 94fa5010df1de4845a44a844b3ed0961, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 411ed537154531d42bc28f5c908e25de, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
