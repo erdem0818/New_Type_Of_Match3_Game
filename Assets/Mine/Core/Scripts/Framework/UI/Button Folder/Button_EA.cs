@@ -1,15 +1,19 @@
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using Mine.Core.Scripts.Framework.Game;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Zenject;
 
 namespace Mine.Core.Scripts.Framework.UI.Button_Folder
 {
     [RequireComponent(typeof(Button))]
     public abstract class Button_EA : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
+        [Inject] protected GameHandler GameHandler;
+        
         private Button _button;
         private Tween _tween;
 

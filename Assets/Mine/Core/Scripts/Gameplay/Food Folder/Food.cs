@@ -1,4 +1,5 @@
 using DG.Tweening;
+using Mine.Core.Scripts.Framework.Game;
 using Mine.Core.Scripts.Gameplay.Signals;
 using UniRx;
 using UniRx.Triggers;
@@ -23,12 +24,14 @@ namespace Mine.Core.Scripts.Gameplay.Food_Folder
     public class FoodPresenter
     {
         private readonly SignalBus _signalBus;
+        private readonly GameHandler _gameHandler;
         private readonly FoodModel _foodModel;
         private readonly FoodView _foodView;
 
-        public FoodPresenter(SignalBus signalBus, FoodModel foodModel, FoodView foodView)
+        public FoodPresenter(SignalBus signalBus, GameHandler handler, FoodModel foodModel, FoodView foodView)
         {
             _signalBus = signalBus;
+            _gameHandler = handler;
             _foodModel = foodModel;
             _foodView = foodView;
         }
@@ -37,7 +40,10 @@ namespace Mine.Core.Scripts.Gameplay.Food_Folder
         {
             _foodView.Food.gameObject.OnMouseUpAsButtonAsObservable().Subscribe(_ => 
             {
-                OnClickedFood();
+                if (_gameHandler.GameplayState == GameplayState.Running)
+                {
+                    OnClickedFood();
+                }
             }).AddTo(_foodView.Food.gameObject);
         }
 
@@ -75,6 +81,7 @@ namespace Mine.Core.Scripts.Gameplay.Food_Folder
     public class Food : MonoBehaviour
     {
         [Inject] private readonly SignalBus _signalBus;
+        [Inject] private readonly GameHandler _gameHandler;
 
         [SerializeField] private FoodData data;
 
@@ -82,6 +89,7 @@ namespace Mine.Core.Scripts.Gameplay.Food_Folder
         private FoodPresenter _presenter;
         private FoodView _foodView;
 
+        #region Properties
         public FoodData Data => _model.Data.Value;
         public bool IsSelected
         {
@@ -118,7 +126,8 @@ namespace Mine.Core.Scripts.Gameplay.Food_Folder
             get => _model.SlideTween;
             set => _model.SlideTween = value;
         }
-        
+        #endregion
+
         private void Awake()
         {
             Install();
@@ -131,7 +140,7 @@ namespace Mine.Core.Scripts.Gameplay.Food_Folder
                 Data = {Value = data}
             };
             _foodView = new FoodView(this);
-            _presenter = new FoodPresenter(_signalBus, _model, _foodView);
+            _presenter = new FoodPresenter(_signalBus, _gameHandler, _model, _foodView);
             _presenter.InitView();
         }
 

@@ -1,6 +1,7 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using Mine.Core.Scripts.Framework.Game;
 using Mine.Core.Scripts.Framework.UI.Panel_Folder;
 using Mine.Core.Scripts.Gameplay.Databases;
 using TMPro;
@@ -87,6 +88,9 @@ namespace Mine.Core.Scripts.Gameplay.UI.Panels
                 .Join(textTransform.rectTransform.DOAnchorPosX(textXTarget, 0.75f).SetEase(Ease.InOutBack))
                 .Append(purpleBg.DOFade(0f, 0.75f))
                 .AsyncWaitForCompletion();
+
+            GameHandler.AppState = AppState.Gameplay;
+            GameHandler.GameplayState = GameplayState.Running;
         }
 
         private  async UniTask PlayLoadingAnimation(CancellationToken token)

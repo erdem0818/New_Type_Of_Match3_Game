@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Mine.Core.Scripts.Framework.Extensions_Folder;
+using Mine.Core.Scripts.Framework.Game;
 using Mine.Core.Scripts.Framework.UI.Panel_Folder.Attribute_Folder;
 using Mine.Core.Scripts.Gameplay;
 using NaughtyAttributes;
@@ -30,9 +31,11 @@ namespace Mine.Core.Scripts.Framework.UI.Panel_Folder
     [RequireComponent(typeof(CanvasGroup))]
     public abstract class BasePanel : MonoBehaviour
     {
-        [Inject] private PanelService _panelService;
-        
+        [Inject] protected readonly PanelService PanelService;
+        [Inject] protected readonly GameHandler GameHandler;
+
         [SerializeField] private bool selfInit;
+        private GameplayState _previousState;
 
         [SerializeField] [ReadOnly]
         protected ReactiveProperty<VisibleState> state = new (VisibleState.Appearing);
@@ -72,7 +75,7 @@ namespace Mine.Core.Scripts.Framework.UI.Panel_Folder
 
             if (!selfInit) return;
             
-            _panelService.AddPanelToViews(this);
+            PanelService.AddPanelToViews(this);
             ShowAsync().Forget();
         }
         
@@ -129,6 +132,9 @@ namespace Mine.Core.Scripts.Framework.UI.Panel_Folder
         [Button]
         public async UniTask ShowAsync(float delay = 0f, CancellationToken token = default)
         {
+            //_previousState = GameHandler.GameplayState.Value;
+            GameHandler.GameplayState = GameplayState.InUI;
+            
             gameObject.SetActive(false);
             await UniTask.Delay(TimeSpan.FromSeconds(delay), cancellationToken: token);
             
@@ -174,6 +180,7 @@ namespace Mine.Core.Scripts.Framework.UI.Panel_Folder
             _disappearedEvent.OnNext(Unit.Default);
 
             await RequestDestroy();
+            //GameHandler.GameplayState.Value = _previousState;
         }
         
         private async UniTask RequestDestroy()

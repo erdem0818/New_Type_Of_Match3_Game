@@ -1,8 +1,5 @@
-using System;
-using System.Text;
 using Cysharp.Threading.Tasks;
-using DG.Tweening;
-using Mine.Core.Scripts.Framework.Extensions_Folder;
+using Mine.Core.Scripts.Framework.Game;
 using Mine.Core.Scripts.Framework.UI.Panel_Folder;
 using Mine.Core.Scripts.Framework.UI.Panel_Folder.Popup_Folder;
 using Mine.Core.Scripts.Gameplay.UI.Panels;
@@ -16,17 +13,13 @@ namespace Mine.Core.Scripts.Gameplay
     {
         [Inject] private Platform _platform;
         [Inject] private IPanelService _panelService;
+        [Inject] private GameHandler _gameHandler;
 
         [SerializeField] private bool debug = false;
+        [SerializeField] private float yPos;
         
         private void Awake()
         {
-            Observable.EveryUpdate().Throttle(TimeSpan.FromSeconds(2f), Scheduler.MainThreadFixedUpdate)
-                .Subscribe(_ =>
-                {
-                    Debug.Log("Throttle");
-                });
-            
             Observable.EveryUpdate().Subscribe(_ =>
             {
                 if (Input.GetKeyDown(KeyCode.Space))
@@ -67,8 +60,27 @@ namespace Mine.Core.Scripts.Gameplay
         {
             if (debug == false) return;
             if(_platform?.Parts == null) return;
+
+            string appStateText = $"App State: {_gameHandler.AppState}";
+            string gmpStateText = $"GameplayState: {_gameHandler.GameplayState}";
             
-            StringBuilder builder = new StringBuilder();
+            GUI.Label(new Rect(40, yPos, 250, 50),
+                appStateText,
+                new GUIStyle()
+                {
+                    fontSize = 45,
+                    richText = true
+                });
+            
+            GUI.Label(new Rect(40, yPos + 40, 250, 50),
+                gmpStateText,
+                new GUIStyle()
+                {
+                    fontSize = 45,
+                    richText = true
+                });
+
+            /*StringBuilder builder = new StringBuilder();
             builder.Append('[');
             foreach (var part in _platform.Parts)
             {
@@ -89,7 +101,7 @@ namespace Mine.Core.Scripts.Gameplay
             GUI.Label(new Rect(10, 50, 200, 50),
                 $"{builder2}".ToColor(Color.white), 
                 new GUIStyle { fontSize = 45,
-                    richText = true,});
+                    richText = true,});*/
         }
     }
 }

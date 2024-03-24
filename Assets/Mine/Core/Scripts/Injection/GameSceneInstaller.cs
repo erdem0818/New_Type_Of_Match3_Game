@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using Mine.Core.Scripts.Framework.Game;
 using Mine.Core.Scripts.Framework.UI.Panel_Folder;
 using Mine.Core.Scripts.Gameplay;
 using Mine.Core.Scripts.Gameplay.Food_Folder;
@@ -13,7 +14,8 @@ namespace Mine.Core.Scripts.Injection
 {
     public class GameSceneInstaller : MonoInstaller
     {
-        [Inject] private IPanelService _panelService;
+        [Inject] private readonly IPanelService _panelService;
+        [Inject] private readonly GameHandler _gameHandler;
         
         [SerializeField] private Transform foodParent;
         [SerializeField] private Transform platformParent;
@@ -31,6 +33,7 @@ namespace Mine.Core.Scripts.Injection
             Container.BindInterfacesAndSelfTo<LevelHandler>().AsSingle();
             
             _panelService.ShowPanel<GameplayPanel>().Forget();
+            //_gameHandler.GameplayState.Value = GameplayState.Running;
         }
 
         private void BindSignals()
