@@ -1,6 +1,7 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using Mine.Core.Scripts.Framework.Extensions_Folder;
 using Mine.Core.Scripts.Framework.Game;
 using Mine.Core.Scripts.Framework.UI.Panel_Folder;
 using Mine.Core.Scripts.Gameplay.Databases;
@@ -15,6 +16,7 @@ namespace Mine.Core.Scripts.Gameplay.UI.Panels
     public class LoadingPanel : DefaultPanel
     {
         [Inject] private FruitSpriteDatabase _fruitSpriteDatabase;
+        
         [SerializeField] private Image loadingImage;
         [SerializeField] private TMP_Text textTransform;
         [SerializeField] private RectTransform rightTarget;
@@ -26,17 +28,6 @@ namespace Mine.Core.Scripts.Gameplay.UI.Panels
         protected override void Awake()
         {
             base.Awake();
-            //Info Logs only once
-            // OnUpdate.FirstOrDefault().Subscribe(_ =>
-            // {
-            //     Debug.Log("Panel On Update");
-            // }).AddTo(gameObject);
-
-            //INFO:: logs every update
-            // OnUpdate.Subscribe(_ =>
-            // {
-            //                     
-            // }).AddTo(gameObject);
 
             OnPreInitialize.Subscribe(_ =>
             {
@@ -52,6 +43,8 @@ namespace Mine.Core.Scripts.Gameplay.UI.Panels
             _cts = new CancellationTokenSource();
             OnDisappear.Subscribe(_ =>
             {
+                //INFO show here
+                Debug.Log("Cancel".ToBold());
                 _cts.Cancel();
                 _cts.Dispose();
                 _tween?.Kill();
@@ -68,7 +61,7 @@ namespace Mine.Core.Scripts.Gameplay.UI.Panels
                 .Join(loadingImage.rectTransform.DOAnchorPosY(iTarget, 0.45f).SetEase(Ease.InOutBack))
                 .Join(textTransform.rectTransform.DOAnchorPosY(tTarget, 0.45f).SetEase(Ease.InOutBack))
                 .AsyncWaitForCompletion();
-            
+
             PlayLoadingAnimation(_cts.Token).Forget();
             await base.WhenPostAppearAsync();
         }

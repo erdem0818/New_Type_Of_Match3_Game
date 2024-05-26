@@ -14,7 +14,7 @@ namespace Mine.Core.Scripts.Framework.UI.Button_Folder
     {
         [Inject] protected GameHandler GameHandler;
         
-        private Button _button;
+        protected Button Button;
         private Tween _tween;
 
         private Vector3 _initialScale;
@@ -23,9 +23,9 @@ namespace Mine.Core.Scripts.Framework.UI.Button_Folder
         
         public virtual void Awake() 
         {
-            _button = GetComponent<Button>();
-            _initialScale = _button.transform.localScale;
-            _button.onClick.AddListener(OnClickCallback);
+            Button = GetComponent<Button>();
+            _initialScale = Button.transform.localScale;
+            Button.onClick.AddListener(OnClickCallback);
         }
         
         private void OnClickCallback()

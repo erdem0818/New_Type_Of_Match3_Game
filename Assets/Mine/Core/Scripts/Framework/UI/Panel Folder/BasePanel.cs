@@ -51,7 +51,7 @@ namespace Mine.Core.Scripts.Framework.UI.Panel_Folder
         private readonly Subject<Unit> _appearedEvent = new();
         private readonly Subject<Unit> _disappearEvent = new();
         private readonly Subject<Unit> _disappearedEvent = new();
-        
+
         public IObservable<Unit> OnPreInitialize => _preInitializeEvent.Share();
         public IObservable<Unit> OnPostInitialize => _postInitializeEvent.Share();
         public IObservable<Unit> OnAppear => _appearEvent.Share();
@@ -68,6 +68,7 @@ namespace Mine.Core.Scripts.Framework.UI.Panel_Folder
         protected virtual void Awake()
         {
             FindCallbackAttributes();
+            
             state.Subscribe((vs) =>
             {
                 Debug.Log(vs.ToString().ToColor(Defines.Lemon));
@@ -80,7 +81,6 @@ namespace Mine.Core.Scripts.Framework.UI.Panel_Folder
         }
         
         #region Reflection
-        //todo make this utility
         private void FindCallbackAttributes()
         {
             Component[] allComponents = GetComponentsInChildren<Component>();
@@ -120,21 +120,19 @@ namespace Mine.Core.Scripts.Framework.UI.Panel_Folder
             }
         }
         #endregion
-        
-        //TODO vContainer - MVP - uniRx example look.
         #region Appear Methods
         
         protected virtual UniTask WhenPreAppearAsync() => UniTask.CompletedTask;
         protected virtual UniTask WhenPostAppearAsync() => UniTask.CompletedTask;
         protected virtual UniTask WhenPreDisappearAsync() => UniTask.CompletedTask;
         protected virtual UniTask WhenPostDisappearAsync() => UniTask.CompletedTask;
-
+        
         [Button]
         public async UniTask ShowAsync(float delay = 0f, CancellationToken token = default)
         {
             //_previousState = GameHandler.GameplayState.Value;
-            GameHandler.GameplayState = GameplayState.InUI;
-            
+            //GameHandler.GameplayState = GameplayState.InUI;
+
             gameObject.SetActive(false);
             await UniTask.Delay(TimeSpan.FromSeconds(delay), cancellationToken: token);
             

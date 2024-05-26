@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 1090724294166711188}
   - component: {fileID: 600131563525040195}
   - component: {fileID: 2441880936919866565}
-  - component: {fileID: 2433934064952680719}
+  - component: {fileID: 3876994796059764847}
+  - component: {fileID: 7165360023085173966}
   m_Layer: 5
   m_Name: Default Panel
   m_TagString: Untagged
@@ -76,7 +77,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &2433934064952680719
+--- !u!225 &3876994796059764847
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3650719858587919184}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &7165360023085173966
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -88,7 +101,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66fcc6dc1235f884e98d57ffd9bde347, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rectTransform: {fileID: 1090724294166711188}
-  backgroundImage: {fileID: 2441880936919866565}
-  appearDuration: 0
-  disappearDuration: 0
+  selfInit: 0
+  state:
+    value: 0

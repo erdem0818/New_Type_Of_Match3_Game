@@ -23,7 +23,7 @@ namespace Mine.Core.Scripts.Gameplay.UI
         {
             LoadingPanel loadingPanel = await _panelService.Create<LoadingPanel>();
             await loadingPanel.ShowAsync();
-            
+
             await UniTask.Delay(100, cancellationToken: destroyCancellationToken);
             await _sceneHandler.LoadSceneAsync("GameScene", LoadSceneMode.Additive);
 
