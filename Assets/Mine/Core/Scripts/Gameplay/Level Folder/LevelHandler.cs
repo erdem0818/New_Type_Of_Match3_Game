@@ -55,8 +55,7 @@ namespace Mine.Core.Scripts.Gameplay.Level_Folder
             _currentData = _database.GetDBItem(save.LastPlayedLevel);
             if (_currentData == null) 
             {
-                Debug.LogError("Level D" +
-                               "ata is null");
+                Debug.LogError("Level Data is null");
                 return; 
             }
 

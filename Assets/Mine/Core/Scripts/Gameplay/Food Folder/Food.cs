@@ -38,6 +38,7 @@ namespace Mine.Core.Scripts.Gameplay.Food_Folder
 
         public void InitView()
         {
+            //this does not work in mobile.
             _foodView.Food.gameObject.OnMouseUpAsButtonAsObservable().Subscribe(_ => 
             {
                 if (_gameHandler.GameplayState == GameplayState.Running)

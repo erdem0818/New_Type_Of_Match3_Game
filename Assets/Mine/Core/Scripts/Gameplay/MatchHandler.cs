@@ -78,13 +78,16 @@ namespace Mine.Core.Scripts.Gameplay
                 Food head = partsList[i].CurrentFood;
                 int headID = head.Data.foodID;
 
-                List<Food> looks = new()
-                {
-                    head
-                };
+                List<Food> looks = new() { head };
 
                 for (int j = 1; j < RequiredMatchCount; j++)
                 {
+                    //BUG
+                    //hard coded
+                    if (i + j >= partsList.Count)
+                    {
+                        continue;
+                    }
                     Food neighbor = partsList[i + j].CurrentFood;
                     looks.Add(neighbor);
                 }
